@@ -1,0 +1,3566 @@
+
+***START WITH SORTING FIRST***
+
+1. Longest Common Subsequence
+Solution:-
+public static int lcs(char[] a, char[] b) {
+    int m, n;
+    m = a.length;
+    n = b.length;
+
+    int[][] lengthArray = new int[m+1][n+1];
+    for(int i = 0; i <= m; i++) {
+        for(int j = 0; j <= n; j++) {
+            if(i == 0 || j == 0) {
+                lengthArray[i][j] = 0;
+
+            } else if(a[i - 1] == b[j - 1]) {
+                lengthArray[i][j] = lengthArray[i - 1][j - 1] + 1;
+            } else {
+                lengthArray[i][j] = max(lengthArray[i-1][j], lengthArray[i][j-1]);
+            }
+        }
+    }
+    return lengthArray[m][n];
+}
+
+2. Longest Increasing Subsequence
+Solution:-
+import java.util.Arrays;
+public static int lis(int[] a) {
+    int[] l = new int[a.length];
+    Arrays.fill(l, 1);
+    for(int i = 1; i < a.length; i++) {
+        for(int j = 0; j < i; j++) {
+            if(a[i] > a[j] && l[i] < l[j] + 1) {
+                l[i] = l[j] + 1;
+            }
+        }
+    }
+    return biggest(l);
+}
+
+3. Convert one string to another using replace, remove or insert operations
+Solution:-
+public static int sameString(char[] a, char b) {
+    int m, n;
+    m = a.length;
+    n = b.length;
+
+    int[][] lengthArray = new int[m+1][n+1];
+    for(int i = 0; i <= m; i++) {
+        for(int j = 0; j <= n; j++) {
+            if(i == 0) {
+                lengthArray[i][j] = j;
+            } else if(j == 0) {
+                lengthArray[i][j] = i;
+            } else if(a[i - 1] == b[j - 1]) {
+                lengthArray[i][j] = lengthArray[i - 1][j - 1];
+            } else {
+                lengthArray[i][j] = 1 + min(lengthArray[i-1][j], lengthArray[i][j-1], lengthArray[i-1][j-1]);
+            }
+        }
+    }
+    return lengthArray[m][n];
+}
+}
+
+4. Subset Sum
+Solution:-
+import java.util.Arrays;
+public class java_rough {
+    public static void main(String[] args) {
+        int[] a = new int[4];
+        Arrays.fill(a, 1);
+        for(int i = 0; i < a.length; i++) {
+            System.out.println(a[i]);
+        }
+        System.out.println("Answer is " + subsetSum(a, 3)); 
+    }
+    public static boolean subsetSum(int[] a, int target) {
+        boolean[][] s = new boolean[a.length + 1][target + 1];
+        for(int i = 0; i <= a.length; i++) {
+            s[i][0] = true;
+        } 
+        for(int j = 1; j <= target; j++) {
+            s[0][j] = false;
+        }
+        for(int i = 1; i <= a.length; i++) {
+            for(int j = 1; j <= target; j++) {
+                if((j - a[i-1]) >= 0) {
+                    s[i][j] = s[i-1][j] || s[i-1][j - a[i - 1]];
+                } else {
+                    s[i][j] = s[i-1][j];
+                }
+            }
+        }
+        for(int i = 0; i <= a.length; i++) {
+            for(int j = 0; j <= target; j++ ) {
+                System.out.println(s[i][j]);
+            }
+        }
+        return s[a.length][target];
+    }
+
+5. Knap-Sack Problem 
+Solution:-
+public static int ksp(int[] wt, int[] v, int sack) {
+    int m;
+    m = wt.length;
+
+    int[][] valueArray = new int[m+1][sack+1];
+    for(int i = 0; i <= m; i++) {
+        valueArray[i][0] = 0;
+    } 
+    for(int j = 1; j <= sack; j++) {
+        valueArray[0][j] = 0;
+    }
+    for(int i = 1; i <= m; i++) {
+        for(int j = 1; j <= sack; j++) {
+            if(wt[i - 1] <= j) 
+                lengthArray[i][j] = max(v[i - 1] + valueArray[i-1][j - wt[i - 1]], valueArray[i - 1][j]);
+            } else {
+                valueArray[i][j] = valueArray[i - 1][j];
+            }
+        }
+    }
+    return lengthArray[m][n];
+}
+
+
+6. Reversing a LL
+Solution:-
+void reverse (struct node *root) {
+    struct node *ptr, next, prev;
+    ptr = root;
+    prev = NULL;
+    while(ptr != NULL) {
+        next = ptr -> link;
+        ptr -> link = prev;
+        prev = ptr;
+        ptr = next;
+    }
+}
+
+
+7. Printing a reversed LL
+Solution:-
+void printReverse (struct node *ptr) {
+    if(ptr == NULL) {
+        return;
+    }
+    printReverse(ptr -> link);
+    printf("%d", ptr -> data);
+}
+
+8. Tree Facts :-
+
+- Complete Binary Tree = All levels except last are Completely filled
+- Max no. of nodes at level i = 2^i;
+- Max no. of nodes in tree with h levels = 2^(h + 1) - 1;
+- first node index  = 2^(i - 1) + last;
+- last node index = first + (2^level) - 1;
+
+
+9. Insertion in BST
+Solution:-
+struct node *newNode(int data) {
+    struct node *ptr;
+    ptr = (struct node*) malloc (sizeof(struct  node));
+    ptr -> data = data;
+    ptr -> lc = NULL;
+    ptr -> rc = NULL;
+    return ptr;
+}
+
+struct node* insert(struct node *head, int data) {
+    if (head == NULL) {
+        head = newNode(data);
+    } else if(head > data) {
+        head -> lc = insert(head -> lc, data);
+    } else {
+        head -> rc = insert(head -> rc, data);
+    }
+    return head;
+}
+
+10. Minimum in BST
+Solution:-
+int min(struct node *head) {
+    struct node *temp = head;
+    while(temp->lc != NULL) {
+        temp = temp -> lc;
+    }
+    return temp -> data;
+}
+
+11. Maximum height of tree -> Max height of Left or Right subtree
+Solution:-
+int maxHeight(struct node *head) {
+    if(head == NULL) {
+        return  -1;
+    } else {
+        return max(maxHeight(head -> lc), maxHeight(head -> rc)) + 1;
+    }
+}
+
+12. LOT(Breadth first traversal) 
+Solution:-
+void lot(struct node *head) {
+    struct node *temp = head;
+    queue<struct node*> nodes;
+    nodes.push(temp);
+    while(!nodes.empty()) {
+        temp = q.pop();
+        printf("%d", temp -> data);
+        if(temp -> lc != NULL) {
+            nodes.push(temp -> lc);
+        }
+        if(temp -> rc != NULL) {
+            nodes.push(temp -> rc);
+        }
+    }
+}
+
+
+13. Coin change problem -> The array of coin types(ex - [1,4,5]) with unlimited amount of supply for each coin 
+type we need to find Minimum number of coins to get a target value.
+
+Solution:-
+import java.util.Arrays;
+import java.util.Scanner;
+public class java_rough {
+    public static void main(String[] args) {
+        int[] a = new int[3];
+        int item;
+        Scanner input = new Scanner(System.in);
+        for(int i = 0; i < a.length; i++) {
+            item = input.nextInt();
+            a[i] = item;
+        }
+        for(int i = 0; i < a.length; i++) {
+            System.out.println(a[i]);
+        }
+        int target = 5;
+        int requiredCoins = coinChange(a, target);
+        if(requiredCoins > target) {
+            System.out.println("NA");
+        } else {
+            System.out.println("Answer is " + requiredCoins);
+        }
+        input.close();
+    }
+    public static int coinChange(int[] a, int target) {
+        int[] reqCoins = new int[target + 1];
+        reqCoins[0] = 0;
+        for(int i = 1; i <= target; i++) {
+            reqCoins[i] = target + 1;
+            for(int j = 0; j < a.length; j++) {
+                if(i >= a[j]) {
+                    reqCoins[i] = Math.min(reqCoins[i - a[j]] + 1, reqCoins[i]);
+                }
+            }
+        } 
+        return reqCoins[target];
+    }
+}
+
+14. Recursive function to check if a tree is BST.
+Solution :-
+int isBst(struct node *root, int max, int min) {
+    if(root == NULL) {
+        return 1;
+    } else if(root -> data >= min && root -> data <= max && isBst(root -> lc, root -> data, min) && isBst(root -> rc, max, root -> data)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+15. Deletion of node in BST.
+Solution:-
+struct node* deleteNode(struct node *root, int target) {
+    if(root == NULL) {
+        return root;
+    } else if(root -> data > target) {
+        root -> lc = deleteNode(root -> lc, target);
+    } else if(root -> data < target) {
+        root -> rc = deleteNode(root -> rc, target);
+    } else {
+        if(root -> lc == NULL && root -> rc == NULL) {
+            delete root; 
+            root = NULL;
+        } else if(root -> lc == NULL) {
+            struct node *temp = root
+            root = root -> rc;
+            delete(temp);
+        } else if(root -> rc == NULL) {
+            struct node *temp = root
+            root = root -> lc;
+            delete(temp);
+        } else {                            //Deleting inorder successor which is selected by convention
+            struct node *temp;
+            temp = findmin(root -> rc);
+            root -> data = temp -> data;
+            root -> rc = deleteNode(root -> rc, temp -> data); 
+            delete(temp);
+        }
+        return root;
+    }
+}
+
+16. Dynamic implementation of Fibonacci series.
+Solution:-
+public static int fibo(int n) {
+        if(n <= 1) {
+            return 0;
+        } else {
+            int[] values = new int[n];
+            int t = 2;
+            values[0] = 0;
+            values[1] = 1;
+            if(n <=2) {
+                return values[n - 1];
+            }
+            while(t < n) {
+                values[t] = values[t-1] + values[t-2];
+                t++;
+            }
+            return values[n - 1];   
+        }
+    }
+
+17. Recursive implementation of Fibonacci series.
+Solution:-
+public static int fibo(int n) {
+    if(n <= 1) {
+        return 0;
+    } else if(n == 2) {
+        return 1;
+    } else {
+        return fibo(n - 1) + fibo(n -2);
+    }
+}
+
+18. First non - repeting character
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import com.sun.javafx.collections.MappingChange.Map;
+public class java_rough {
+
+    public static class character {
+        public int index;
+        public int frequency;
+
+        public character(int index) {
+            this.index = index;
+            frequency = 1;
+        }
+
+        public void increaseFrequency() {
+            this.frequency++;
+        }
+    }
+    public static void main(String[] args) {
+        char [] word = new char[] {'a', 'c', 'b', 'h', 'c', 'b', 'h','g', 'a'};
+        HashMap<Integer, character> record = new HashMap<>();
+        int temp;
+        for(int i = 0; i < word.length; i++) {
+            temp = (int) word[i];
+            if(!record.containsKey(temp)) {
+                character ch = new character(i);
+                record.put(temp, ch);
+            } else {
+                record.get(temp).increaseFrequency();
+            }
+        }
+
+        for(int i = 0; i < word.length; i++) {
+            temp = (int) word[i];
+            if(record.get(temp).frequency == 1) {
+                System.out.println(word[i]);
+                return;
+            }
+        }
+    }
+}
+
+
+ALTERNATE APPROACH
+
+class java_rough {
+    public static void main(String[] args) {
+        String word = "ADBCGHIZEFKJLADTVDERFSWVGHQWCNOPENSMSJWIERTFB";
+        int [] frequency = new int[26];
+        int temp, minIndex;
+        minIndex = word.length();
+
+        for(int i = 0; i < 26; i++) {
+            frequency[i] = -1;
+        }
+        
+        for(int i = 0; i < word.length(); i++) {
+            temp = (int) word.charAt(i);
+            temp -=65;
+
+            if(frequency[temp] == -1) {
+                frequency[temp] = i;
+            } else {
+                frequency[temp] = -2;
+            }  
+        }
+
+        for(int i = 0; i < 26; i++) {
+            if(frequency[i] >= 0 && minIndex > frequency[i]) {
+                minIndex = frequency[i];
+            }
+        }
+
+        System.out.println(word.charAt(minIndex));
+    }
+
+19. Printing biggest number based on elements in array 
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import com.sun.javafx.collections.MappingChange.Map;
+public class java_rough {
+     public static void main(String[] args) {
+        int[] numbers = new int[]{1, 34, 3, 98, 9, 76, 45, 4};
+        ArrayList<String> allNumbers = new ArrayList<>();
+        String temp;
+        for(int i = 0 ;i < numbers.length; i++) {
+            temp = String.valueOf(numbers[i]);
+           allNumbers.add(temp);
+        }
+
+        Collections.sort(allNumbers, new Comparator<String>() {
+            @Override
+            public int compare(String o, String p) {
+                String X, Y, XY, YX;
+                X = p;
+                Y = o;
+                XY = X + Y;
+                YX = Y + X;
+                System.out.println(XY + " and " + YX);
+                if(XY.compareTo(YX) > 0) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        for(int i = allNumbers.size() - 1; i >= 0; i--) {
+            System.out.print(allNumbers.get(i));
+        }
+    }
+}
+
+20. Maximum average marks for given students
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import com.sun.javafx.collections.MappingChange.Map;
+public class java_rough {
+     public static void main(String[] args) {
+        String[][] scores = new String[][] {{"jerry","65"}, {"bob","1"}, {"jerry","23"},{"Eric","23"}, {"jerry","100"},{"Eric","83"}};
+        //int[][] avg = new int[1][2];
+        int Maxavg = 0;
+        int temp;
+
+        HashMap<String, int[][]> record = new HashMap<>();
+
+        for(int i = 0; i < scores.length; i++) {
+            if(record.containsKey(scores[i][0])) {
+                record.get(scores[i][0])[0][0]++;
+                record.get(scores[i][0])[0][1] = record.get(scores[i][0])[0][1] + Integer.parseInt(scores[i][1]);
+            } else {
+                record.put(scores[i][0], new int[1][2]);
+                record.get(scores[i][0])[0][0]++;
+                record.get(scores[i][0])[0][1] = record.get(scores[i][0])[0][1] + Integer.parseInt(scores[i][1]);
+            }
+            System.out.println(scores[i][0] + " current avg " + record.get(scores[i][0])[0][1] / record.get(scores[i][0])[0][0]);
+        }
+
+        for(int i = 0; i < record.size(); i++) {
+            temp = record.get(scores[i][0])[0][1] / record.get(scores[i][0])[0][0];
+            if(temp > Maxavg) {
+                Maxavg = temp;
+            }
+        }
+
+        System.out.println(Maxavg);
+    }
+}
+
+21. Maximum repeating substring with same character
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import com.sun.javafx.collections.MappingChange.Map;
+public class java_rough {
+     public static void main(String[] args) {
+     String sample = "aaabccddddaad";
+     char[] sampleArray = sample.toCharArray();
+
+     int[] frequency = new int[26];
+     int temp, count, max;
+     max = 0;
+     temp = 0;
+     count = 0;
+     char c = 'a';
+     int i = 0;
+     while(i < sample.length() - 1) {
+         temp = (int) sampleArray[i] - 97;
+         if(sampleArray[i] == sampleArray[i + 1]) {
+            count++;
+            i++;
+            if(count > frequency[temp]) {
+                frequency[temp] = count;
+            }
+         } else {
+             i++;
+             count = 0;
+         }
+    }
+
+     for(i = 0; i < sample.length(); i++) {
+        temp = (int) sampleArray[i] - 97;
+        if(max < frequency[temp]) {
+            max = frequency[temp];
+            c = (char) (temp + 97);
+        }
+     }
+     System.out.println(c + " repeats " + (max + 1) + " times");
+    }
+}
+
+22. Water Trapping problem
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import com.sun.javafx.collections.MappingChange.Map;
+public class java_rough {
+     public static void main(String[] args) {
+     int[] elevation = new int[]{3, 0, 0, 2, 0, 4};
+     int leftIndex, rightIndex, leftMax, rightMax, result;
+     leftIndex = 0;
+     rightIndex = elevation.length - 1;
+     leftMax = 0;
+     rightMax = 0;
+     result = 0;
+
+     while(leftIndex <= rightIndex) {
+         if(elevation[leftIndex] < elevation[rightIndex]) {
+             if(elevation[leftIndex] > leftMax) {
+                 leftMax = elevation[leftIndex];
+             } else {
+                result += leftMax - elevation[leftIndex];
+             }
+             leftIndex++;
+         } else {
+            if(elevation[rightIndex] > rightMax) {
+                rightMax = elevation[rightIndex];
+            } else {
+               result += rightMax - elevation[rightIndex];
+            }
+            rightIndex--;
+         }
+     }
+
+     System.out.println(result);
+    }
+}
+
+23. Printing Anagrams together
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import com.sun.javafx.collections.MappingChange.Map;
+public class java_rough {
+    public static void main(String[] args) {
+        String[] words = new String[]{"cat", "dog", "act", "tac", "god"};
+        char[] temp = new char[]{'a'};
+        String temp1;
+        HashMap<String, ArrayList<String>> record = new HashMap<>();
+        for(int i = 0; i < words.length; i++) {
+            temp = words[i].toCharArray();
+            Arrays.sort(temp);
+            temp1 = String.valueOf(temp);
+            System.out.println(temp1);
+            if(record.containsKey(temp1)) {
+                record.get(temp1).add(words[i]);
+            } else {
+                record.put(temp1, new ArrayList<String>());
+                record.get(temp1).add(words[i]);
+            }
+        }
+        
+        for(String key : record.keySet()) {
+            System.out.println(record.get(key));
+        }
+    }
+}
+
+
+24. Josephus Problem
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Scanner;
+import com.sun.javafx.collections.MappingChange.Map;
+
+public class java_rough {
+    public static void main(String[] args) {
+        int n = 14;
+        int k = 2;
+
+        int[] dead = new int[n];
+        int count = 0;
+        int index = k - 1;
+
+        while(count < n - 1) {
+            if(dead[index] == 2) {
+                index = (index + 1) % n;
+            } else {
+                dead[index] = 2;
+                count++;
+                index = (index + k) % n;
+            }
+        }
+
+        for(int i = 0; i < n; i++) {
+            //if(dead[i] == 0) {
+                System.out.println("Place is " + dead[i]);
+            //}
+        }
+    }
+}
+
+25. Java lot 
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public void lot(node root) {
+            Queue<node> queue = new LinkedList<>();
+            queue.add(root);
+            node temp;
+            while(!queue.isEmpty()) {
+                temp = queue.remove();
+                System.out.println(temp.value);
+                if(temp.lc != null) {
+                    queue.add(temp.lc);
+                }
+                if(temp.rc != null) {
+                    queue.add(temp.rc);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        node root = new node(2);
+        root.insert(root, 1);
+        root.insert(root, 3);
+        root.insert(root, 5);
+        root.insert(root, 4);
+        root.insert(root, 2);
+        root.insert(root, 6);
+        root.lot(root);
+    }
+}
+
+26. Getting longest word from dictionary made from given characters
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        String word = "estofgso";
+        String[] dict = new String[]{"to", "too", "toe", "toes", "stgge", "abcdef"};
+        int k , j, count, max;
+        HashMap<Integer, ArrayList<String>> record = new HashMap<>();
+        String t;
+        max = 0;
+        char[] temp = word.toCharArray();
+        Arrays.sort(temp);
+        word = String.valueOf(temp); 
+        
+
+        for(int i = 0; i  < dict.length; i++) {
+            j = 0;
+            k = 0;
+            count = 0;
+            temp = dict[i].toCharArray();
+            Arrays.sort(temp);
+            t = String.valueOf(temp);
+            while(j < dict[i].length() && k < word.length()) {
+                if(t.charAt(j) == word.charAt(k)) {
+                    j++;
+                    k++;
+                    count++;
+                } else if(t.charAt(j) > word.charAt(k)) {
+                    k++;
+                } else {
+                    j++;
+                }
+            }
+            System.out.println(count);
+            if(!record.containsKey(count)) {
+                record.put(count, new ArrayList<String>());
+            }
+            record.get(count).add(dict[i]);
+            if(count > max) {
+                max = count;
+            } 
+        }
+
+        for(int i = 0; i < record.get(max).size(); i++) {
+            System.out.println(record.get(max).get(i));
+        }
+    }
+}
+
+27. Getting ways to get upstairs given number of stairs and allowed steps.
+
+class java_rough {
+    public static void main(String[] args) {
+        int steps = 4;
+        int j;
+        int[] allowed = new int[]{1, 2};
+        int[] ways = new int[steps + 1];
+        ways[0] = 1;
+        int total;
+        for(int i = 1; i <= steps; i++) {
+            j = 0;
+            total = 0;
+            while(j < allowed.length) {
+                if(i >= allowed[j]) {
+                    total += ways[(i - allowed[j])];
+                }
+                j++;
+            }
+            ways[i] = total;
+        }
+        System.out.println(ways[steps]);
+        }
+}
+
+28. Spiral reading of matrix
+
+class java_rough {
+    public static void main(String[] args) {
+        int[][] array = new int[][]{{1,2,3},{2,4,5},{4,4,5}};
+        int i, j, start, end;
+        start = 0;
+        end = array.length;
+        i = 0;
+        j = 0;
+        while(start <= end) {
+            for(j = start; j <= end - 1; j++) {
+                System.out.print(array[i][j] + ", ");
+            }
+            j--;
+            for(i = start + 1; i < end - 1; i++) {
+                System.out.print(array[i][j] + ", ");
+            }
+            for(j = end - 1; j > start; j--) {
+                System.out.print(array[i][j] + ", ");
+            }
+            for(i = end - 1; i > start; i--) {
+                System.out.print(array[i][j] + ", ");
+            }
+            System.out.println(" ");
+            start++;
+            end--;
+            i = start;
+        }
+    }
+}
+
+29. Decimal representation of fraction
+
+import java.util.HashMap;
+
+class java_rough {
+    public static void main(String[] args) {
+        int num, deno, rem;
+        num = 50;
+        deno = 22;
+        boolean repeating = false; 
+        String result = "";
+        HashMap<Integer, Integer> record = new HashMap<>();
+
+        result += String.valueOf(num/deno);
+        result += ".";
+        rem = (num % deno) * 10;
+
+        while(!repeating && rem > 0) {
+            if(record.containsKey(rem)) {
+                repeating = true;
+                System.out.print(result.substring(0,record.get(rem)));
+                System.out.println("(" + result.substring(record.get(rem), result.length()) + ")");
+            } else {
+                record.put(rem, result.length());
+                result += String.valueOf(rem / deno);
+                rem = (rem % deno) * 10;
+            }
+        }
+        if(!repeating) {
+            System.out.println(result);
+        }
+    }
+}
+
+
+
+30. Zigzag traversal of Tree
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public void lot(node root) {
+            Queue<node> queue = new LinkedList<>();
+            queue.add(root);
+            node temp;
+            while(!queue.isEmpty()) {
+                temp = queue.remove();
+                System.out.println(temp.value);
+                if(temp.lc != null) {
+                    queue.add(temp.lc);
+                }
+                if(temp.rc != null) {
+                    queue.add(temp.rc);
+                }
+            }
+        }
+
+        public void zigZag(node root) {
+            Stack<node> currentStack = new Stack<>();
+            Stack<node> nextStack = new Stack<>();
+            boolean r2l = true;
+            Stack<node> temp;
+            node tempNode;
+            currentStack.add(root);
+            while(!currentStack.isEmpty()) {
+                tempNode = currentStack.pop();
+                System.out.println(tempNode.value);
+                if(r2l) {
+                    if(tempNode.lc != null) {
+                        System.out.println("lc pushed "+ tempNode.lc.value);
+                        nextStack.push(tempNode.lc);
+                    }
+                    if(tempNode.rc != null) {
+                        System.out.println("rc pushed "+ tempNode.rc.value);
+                        nextStack.push(tempNode.rc);
+                    }
+                } else {
+                    if(tempNode.rc !=null) {
+                        System.out.println("rc pushed "+ tempNode.rc.value);
+                        nextStack.push(tempNode.rc);
+                    }
+                    if(tempNode.lc != null) {
+                        System.out.println("lc pushed "+ tempNode.lc.value);
+                        nextStack.push(tempNode.lc);
+                    }
+                }
+                if(currentStack.isEmpty()) {
+                    temp = currentStack;
+                    currentStack = nextStack;
+                    nextStack = temp;
+                    r2l = !r2l;
+                    System.out.println("Swapped");
+                }
+            }
+            
+        }
+    }
+
+    public static void main(String[] args) {
+        node root = new node(10);
+        root.insert(root, 4);
+        root.insert(root, 9);
+        root.insert(root, 12);
+        root.insert(root, 18);
+        root.insert(root, 1);
+        root.insert(root, 6);
+        root.insert(root, 13);
+        root.lot(root);
+
+        System.out.println("Zig-Zag traversal");
+        
+        node root1 = new node(10);
+        root1.insert(root1, 4);
+        root1.insert(root1, 9);
+        root1.insert(root1, 12);
+        root1.insert(root1, 18);
+        root1.insert(root1, 1);
+        root1.insert(root1, 6);
+        root1.insert(root1, 13);
+        root1.zigZag(root1);
+    }
+}
+
+31. Binary Search of sorted array
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] numbers = new int[]{1,5,3,2,7,4};
+        int low, high, mid, target, iterations;
+        low = 0;
+        high = numbers.length - 1;
+        target = 1;
+        iterations = 0;
+        Arrays.sort(numbers);
+        while(low <= high) {
+            mid = (high + low) / 2;
+            System.out.println(mid);
+            if(numbers[mid] > target) {
+                high = mid - 1;
+                iterations++;
+            } else if(numbers[mid] < target) {
+                low = mid + 1;
+                iterations++;
+            } else {
+                iterations++;
+                System.out.println("Found in " + iterations + " iterations");
+                return;
+            }
+        }
+        System.out.println("Finished searching not found");
+    }
+}
+
+32. Finding first occurance element using Binary searching
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] numbers = new int[]{1,1,5,4,6,3,2,4,7,4};
+        int low, high, mid, target, index;
+        low = 0;
+        index = -1;
+        high = numbers.length - 1;
+        target = 4;
+        Arrays.sort(numbers);
+        while(low <= high) {
+            mid = (high + low) / 2;
+            if(numbers[mid] > target) {
+                high = mid - 1;
+            } else if(numbers[mid] < target) {
+                low = mid + 1;
+            } else {
+                index = mid;
+                high = mid - 1;
+            }
+        }
+        if(index >= 0) {
+            System.out.println("Found first at index -> " + index);
+        } else {
+            System.out.println("Finished searching not found");
+        }
+    }
+}
+
+
+33. Finding out how many times a Sorted array has been Circulary rotated
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] numbers = new int[]{2,3,4,5,6,1};
+        int low, high, mid, next, prev;
+        low = 0;
+        high = numbers.length - 1;
+        while(low <= high) {
+            mid = (high + low) / 2;
+            next = (mid + 1) % numbers.length;
+            prev = (mid + numbers.length + -1) % numbers.length;
+            System.out.println(prev + " , " + mid + " , " + next);
+            if(numbers[mid] < numbers[next] && numbers[mid] < numbers[prev]) {
+                System.out.println("Array has been rotated -> " + mid + " times");
+                return;
+            } else if(numbers[mid] < numbers[high]) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        System.out.println("Number not found");
+    }
+}
+
+34. Finding out element in an Circulary rotated sorted array.
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] numbers = new int[]{3,4,5,6,1,2};
+        int low, high, mid, target;
+        low = 0;
+        target = 1;
+        high = numbers.length - 1;
+        while(low <= high) {
+            mid = (high + low) / 2;
+            if(numbers[mid] == target) {
+                System.out.println("Element found at index -> " + mid);
+                return;
+            } else if(numbers[mid] < numbers[high]) {
+                if(target > numbers[mid] && target <= numbers[high]) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            } else {
+                if(numbers[low] <= target && numbers[mid] > target) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
+            }
+        }
+        System.out.println("Number not found");
+    }
+}
+
+35. Finding merge point of 2 Linked LinkedList
+
+import java.util.Arrays;
+
+import javax.xml.soap.Node;
+
+class java_rough {
+    public int lengthList(node root) {
+        node ptr;
+        int length;
+        length = 0;
+        ptr = root;
+        while(ptr != null) {
+            length++;
+            ptr = ptr.next();
+        }
+        return length;
+    }
+    public node commonNode(node rootA, node rootB) {
+        int lengthA, lengthB;
+        lengthA = lengthList(rootA);
+        lengthB = lengthList(rootB);
+        Node tempA, tempB;
+        if(lengthA < lengthB) {
+            tempA = rootB;
+            tempB = rootA;
+        } else {
+            tempA = rootA;
+            tempB = rootB;
+        }
+        for(int i = 0; i < Math.abs(lengthA - lengthB); i++) {
+            tempA = tempA.next();
+        }
+
+        while(tempA != null) {
+            if(tempA.equals(tempB)) {
+                return tempA.value();
+            } else {
+                tempA = tempA.next();
+                tempB = tempB.next();
+            }
+        } 
+    }
+}
+
+36. Finding largest sum in a subarray (Kadane's Algorithm)
+
+class java_rough {
+    public static void main(String[] args) {
+        //int[] numbers = new int[]{-2, -3, 4, -1, -2, 1, 5, -3};
+        int[] numbers = new int[]{2, 1, -3, 4, -1, 2, 1, -5, -4};
+        int sum, answer;
+        sum = 0;
+        answer = 0;
+
+        for(int i = 0; i < numbers.length; i++) {
+            if(sum + numbers[i] > 0) {
+                sum += numbers[i];
+            } else {
+                sum = 0;
+            }
+            answer = Math.max(sum, answer);
+        }
+        System.out.println(answer);
+    }
+}
+
+37. Crisscross linked list mix of two seprate linked list.
+
+class java_rough {
+    static class node {
+        int value;
+        node next;
+
+        void setValue(int value) {
+            this.value = value;
+        }
+        void setNode(node next) {
+            this.next = next;
+        }
+
+        int getValue() {
+            return this.value;
+        }
+
+        node getNode() {
+            return this.next;
+        }
+    }
+
+    public static node crisscross(node root_1, node root_2) {
+        node ptr_1, ptr_2, next_1, next_2;
+        ptr_1 = root_1;
+        ptr_2 = root_2;
+        while(ptr_1 != null) {
+            next_1 = ptr_1.getNode();
+            next_2 = ptr_2.getNode();
+            ptr_1.setNode(ptr_2);
+            ptr_1.getNode().setNode(next_1);
+            ptr_1 = next_1;
+            ptr_2 = next_2;
+        }
+        return root_1;
+    }
+
+    public static void main(String[] args) {
+        node n1 = new node();
+        node n2 = new node();
+        node n3 = new node();
+        node m1 = new node();
+        node m2 = new node();
+        node m3 = new node();
+
+        n1.setValue(1);
+        n1.setNode(n2);
+
+        n2.setValue(2);
+        n2.setNode(n3);
+        
+        n3.setValue(3);
+        n3.setNode(null);
+
+        m1.setValue(4);
+        m1.setNode(m2);
+
+        m2.setValue(5);
+        m2.setNode(m3);
+        
+        m3.setValue(6);
+        m3.setNode(null);
+
+        node ptr_1 = crisscross(n1, m1);
+
+        while(ptr_1 != null) {
+            System.out.println(ptr_1.getValue());
+            ptr_1 = ptr_1.getNode();
+        }
+    }
+}
+
+38. Create stack with push, pop and findMax functionality in O(1)
+
+import java.util.Scanner;
+import java.util.Stack;
+
+class java_rough {
+    static class node {
+        int value;
+        int max;
+
+        node(int value, int max) {
+            this.value = value;
+            this.max = max;
+        }
+
+        int getValue() {
+            return this.value;
+        }
+
+        int getMax() {
+            return this.max;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        Stack<node> stack = new Stack<>();
+        int max = 0;
+        int value;
+        node temp;
+        System.out.println("Select operation code\n1. Push\n2. Pop\n3. Max");
+        int choice = input.nextInt();
+        while(choice != 0) {
+            switch(choice) {
+                case 1:
+                System.out.println("Enter value");
+                value = input.nextInt();
+                if(value > max) {
+                    stack.push(new node(value, max));
+                    max = value;
+                } else {
+                    stack.push(new node(value,max));
+                }
+                break;
+
+                case 2:
+                temp = stack.pop();
+                if(temp.getValue() == max) {
+                    max = temp.getMax();
+                }
+                System.out.println("value returned " + temp.getValue());
+                break;
+                
+                case 3:
+                System.out.println("Max value is " + max);
+                break;
+
+                default :
+                return;
+            }
+            System.out.println("Select operation code\n1. Push\n2. Pop\n3. Max");
+            choice = input.nextInt();
+        }
+        input.close();
+    }
+}
+
+39. Finding if loop exists in ll and its starting point
+
+class java_rough {
+    static class node {
+        int value;
+        node next;
+
+        void setValue(int value) {
+            this.value = value;
+        }
+        void setNode(node next) {
+            this.next = next;
+        }
+
+        int getValue() {
+            return this.value;
+        }
+
+        node getNode() {
+            return this.next;
+        }
+    }
+     public static void main(String[] args) {
+        node n1 = new node();
+        node n2 = new node();
+        node n3 = new node();
+        node n4 = new node();
+        
+
+        n1.setValue(1);
+        n1.setNode(n2);
+
+        n2.setValue(2);
+        n2.setNode(n3);
+        
+        n3.setValue(3);
+        n3.setNode(n4);
+
+        n4.setValue(4);
+        n4.setNode(n2);
+
+        node slow, fast;
+        slow = n1;
+        fast = n1;
+        while(fast != null) {
+            slow = slow.getNode();
+            fast = fast.getNode().getNode();
+            if(slow.equals(fast)) {
+                break;
+            }
+        }
+// logic to find starting node of loop
+        slow = n1;
+        while(!slow.equals(fast)) {
+            slow = slow.getNode();
+            fast = fast.getNode();
+        }
+        System.out.println("The node value where loop starts is " + fast.getValue());
+    }
+}
+
+40. Prime factorization 
+
+class java_rough {
+    public static void main(String[] args) {
+        int number;
+        number = 54;
+        while(number % 2 == 0) {
+            System.out.print("2\t");
+            number /= 2;
+        }
+
+        for(int i = 3; i < Math.sqrt(number); i++) {
+            while(number % i == 0) {
+                System.out.print(i+"\t");
+                number /= i;
+            }
+        }
+
+        if(number > 2) {
+            System.out.print(number);
+        }
+    }
+}
+
+41. Number of ones in binary representation of a number
+
+class java_rough {
+    public static void main(String[] args) {
+        int number = 9;
+        int ones = 0;
+        while(number > 0) {
+            ones += number & 1;
+            number >>=1;
+        }
+        System.out.println(ones);
+    }
+}
+
+42. nth node from end in ll in one iterations
+
+class java_rough {
+    static class node {
+        int value;
+        node next;
+
+        void setValue(int value) {
+            this.value = value;
+        }
+        void setNode(node next) {
+            this.next = next;
+        }
+
+        int getValue() {
+            return this.value;
+        }
+
+        node getNode() {
+            return this.next;
+        }
+    }
+     public static void main(String[] args) {
+        node n1 = new node();
+        node n2 = new node();
+        node n3 = new node();
+        node n4 = new node();
+
+        int nth = 4;
+        
+
+        n1.setValue(1);
+        n1.setNode(n2);
+
+        n2.setValue(2);
+        n2.setNode(n3);
+        
+        n3.setValue(3);
+        n3.setNode(n4);
+
+        n4.setValue(4);
+        n4.setNode(null);
+
+        node slow, fast;
+        slow = n1;
+        fast = n1;
+
+        for(int i = 0; i < nth ; i++) {
+            fast = fast.getNode();
+        }
+
+        while(fast != null) {
+            slow = slow.getNode();
+            fast = fast.getNode();
+        }
+        System.out.println("the " + nth + " node from last is " + slow.getValue());
+    }
+}
+
+43. Arranging ll in i -> (n - i) manner where i goes from 0 to n/2 and n is length of list
+
+class java_rough {
+    static class node {
+        int value;
+        node next;
+
+        void setValue(int value) {
+            this.value = value;
+        }
+        void setNode(node next) {
+            this.next = next;
+        }
+
+        int getValue() {
+            return this.value;
+        }
+
+        node getNode() {
+            return this.next;
+        }
+    }
+     public static void main(String[] args) {
+        node n1 = new node();
+        node n2 = new node();
+        node n3 = new node();
+        node n4 = new node();
+        node n5 = new node();
+
+        int nth = 4;
+        
+
+        n1.setValue(1);
+        n1.setNode(n2);
+
+        n2.setValue(2);
+        n2.setNode(n3);
+        
+        n3.setValue(3);
+        n3.setNode(n4);
+
+        n4.setValue(4);
+        n4.setNode(n5);
+
+        n5.setValue(5);
+        n5.setNode(null);
+
+        node slow, fast;
+        slow = n1;
+        fast = n1;
+
+        while(fast != null && fast.getNode() != null) {
+            slow = slow.getNode();
+            fast = fast.getNode().getNode();
+        }
+        System.out.println("value of mid node = " + slow.getValue());
+        node ptr, prev, next;
+        ptr = slow;
+        prev = null;
+        while(ptr != null) {
+            next = ptr.getNode();
+            ptr.setNode(prev);
+            prev = ptr;
+            ptr = next;
+        }
+        System.out.println("value of mid node = " + prev.getValue());
+        ptr = n1;
+        slow = prev;
+        while(slow != null) {
+            next = ptr.getNode();
+            prev = slow.getNode();
+            ptr.setNode(slow);
+            slow.setNode(next);
+            ptr = next;
+            slow = prev;
+        }
+        ptr = n1;
+        while(ptr != null) {
+            System.out.print(ptr.getValue() + " -> ");
+            ptr = ptr.getNode();
+        }
+        System.out.println("null");
+    }
+}
+
+44. Maximum Product Subarray
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] entries = new int[]{-2, -3, 0, -2, -40};
+        int prod, result;
+        prod = 0;
+        result = 0;
+        for(int i = 0 ; i < entries.length; i++) {
+           if(entries[i] == 0) {
+                prod = 0;
+           } else {
+               if(prod == 0) {
+                   prod = entries[i];
+               } else {
+                   prod *= entries[i];
+               }
+           }
+           result = Math.max(result, prod);
+        }
+        System.out.println(result);
+    }
+}
+
+
+45. Rat Maze problem
+
+class java_rough {
+    public static void ratMaze(int[][] maze) {
+
+        //This function intializes a solution matrix of same size as the maze matrix
+        //and intializes value of row and column and calls recursive function that will return boolean
+        int[][] solution = new int[maze.length][maze.length];
+        int row, column;
+        row = 0;
+        column = 0;
+        //calling the recursive function to solve the question
+        if(solveMaze(maze, solution, row, column) == false) {
+            System.out.println("There is no path");
+        } else {
+            printArray(solution);
+            System.out.println("Is the path for reaching the end");
+        }
+    }
+
+    public static boolean solveMaze(int[][] maze, int[][] solution, int row, int column) {
+        //Exit condition to check if we have reached the end
+        if(row == maze.length - 1 && column == maze.length - 1) {
+            solution[row][column] = 1;
+            return true;
+        } 
+        //Checking if we are at a allowed tile in matrix
+        if(isValidMove(maze, row, column)) {
+            //if we are we will tell our solution matrix that we are here
+            solution[row][column] = 1;
+            //Recursive call to function starting after taking a down step
+            if(solveMaze(maze, solution, row + 1, column)) {
+                return true;
+            }
+            //Recursive call to function starting after taking a right step
+            if(solveMaze(maze, solution, row, column+1)) {
+                return true;
+            }
+            //If still true is not returned that means we will not find path from here so we update out solution 
+            //matrix
+            solution[row][column] = 0;
+            return false;
+        }   
+        return false;
+    }
+
+    public static void printArray(int[][] solution) {
+        for(int i = 0; i < solution.length; i++) {
+            for(int j = 0; j < solution.length; j++) {
+                System.out.print(solution[i][j] + " ");
+            }
+            System.out.println(" ");
+        }
+    }
+
+    public static boolean isValidMove(int[][] maze, int row, int column) {
+        return (row <= maze.length - 1 && column <= maze.length - 1 && maze[row][column] == 1);
+    }
+
+    public static void main(String[] args) {
+
+        //intial maze matrix
+        int[][] maze = new int[][]{ { 1, 1, 1, 1 }, 
+                                    { 1, 1, 0, 1 }, 
+                                    { 0, 1, 0, 1 }, 
+                                    { 0, 0, 0, 1 } }; 
+
+        ratMaze(maze); //calling function to solve
+    }
+}
+
+46. KMP sub-string match
+
+class java_rough {
+
+    public static void kmp(String data, String pattern) {
+        int[] lps = new int[pattern.length()];
+        lps = preProcessLongestPrefixSuffix(pattern, lps);
+        int i = 0;
+        int j = 0;
+        while(i < data.length()) {
+            if(data.charAt(i) == pattern.charAt(j)) {
+                i++;
+                j++;
+                if(j == pattern.length() - 1) {
+                    System.out.println("Match occurs at index " + (i - j));
+                    j = lps[j - 1];
+                }
+            } else {
+                if(j != 0) {
+                    j = lps[j - 1];
+                } else {
+                    i++;
+                }
+            }
+        }
+    }
+
+    public static int[] preProcessLongestPrefixSuffix(String pattern, int[] lps) {
+        lps[0] = 0;
+        int length = 0;
+        int i = 0;
+        while(i < pattern.length() - 1) {
+            if(pattern.charAt(i) == pattern.charAt(length)) {
+                length++;
+                i++;
+                lps[i] = length;
+            } else if(length != 0) {
+                length = lps[length];
+            } else {
+                lps[i] = length;
+                i++;
+            }
+        }
+        for(i = 0; i < lps.length; i++) {
+            System.err.print(lps[i] + " ");
+        }
+        return lps;
+    }
+
+    public static void main(String[] args) {
+       String data, pattern;
+       data = "AABAACAADAABAABA";
+       pattern = "AABA";
+       System.out.println(data + " and " + pattern);
+       kmp(data, pattern);
+    }
+}
+47. Possible paths for n*m matrix
+
+
+Best case solution will be using PnC ie
+
+(n + m - 2) / ((n - 1)! * (m - 1)!);
+
+DP Solution: -
+class java_rough {
+     public static void main(String[] args) {
+        int m, n;
+        m = 5;
+        n = 5;
+        int [][] paths = new int[m][n];
+        for(int i = 0; i < m; i++) {
+            paths[i][0] = 1;
+        }
+        for(int j = 0; j < n; j++) {
+            paths[0][j] = 1;
+        }
+        for(int i = 1; i < n; i++) {
+            for(int j = 1; j < m; j++) {
+                paths[i][j] = paths[i][j - 1] + paths[i - 1][j];
+            }
+        }
+        System.out.println("The possible solutions are " + paths[m - 1][n - 1]);
+
+    }
+
+48. Interface referance can hold child class object but only methods declared in the interface can be called.
+EX - https://stackoverflow.com/questions/14997202/creating-object-with-reference-to-interface
+
+49. Referance for understanding the relations between collection classes and interfaces.
+EX - https://www.scientecheasy.com/2018/09/collection-hierarchy-in-java.html
+
+50. For storing and accessing data ArrayList is better for data manipulation and removal linked list is better
+as in ArrayList we internally bits are shifted but in LinkedList we can just update the referances as it is
+implemented using doubly linked list internally.
+
+51. Implementation example of priority queue with custom comparator function used for priority calculation
+with random class example
+
+package com.journaldev.collections;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Random;
+
+public class PriorityQueueExample {
+
+	public static void main(String[] args) {
+		
+		//natural ordering example of priority queue
+		Queue<Integer> integerPriorityQueue = new PriorityQueue<>(7);
+		Random rand = new Random();
+		for(int i=0;i<7;i++){
+			integerPriorityQueue.add(new Integer(rand.nextInt(100)));
+		}
+		for(int i=0;i<7;i++){
+			Integer in = integerPriorityQueue.poll();
+			System.out.println("Processing Integer:"+in);
+		}
+		
+		//PriorityQueue example with Comparator
+		Queue<Customer> customerPriorityQueue = new PriorityQueue<>(7, idComparator);
+		addDataToQueue(customerPriorityQueue);
+		
+		pollDataFromQueue(customerPriorityQueue);
+		
+	}
+	
+	//Comparator anonymous class implementation
+	public static Comparator<Customer> idComparator = new Comparator<Customer>(){
+		
+		@Override
+		public int compare(Customer c1, Customer c2) {
+            return (int) (c1.getId() - c2.getId());
+        }
+	};
+
+	//utility method to add random data to Queue
+	private static void addDataToQueue(Queue<Customer> customerPriorityQueue) {
+		Random rand = new Random();
+		for(int i=0; i<7; i++){
+			int id = rand.nextInt(100);
+			customerPriorityQueue.add(new Customer(id, "Pankaj "+id));
+		}
+	}
+	
+	//utility method to poll data from queue
+	private static void pollDataFromQueue(Queue<Customer> customerPriorityQueue) {
+		while(true){
+			Customer cust = customerPriorityQueue.poll();
+			if(cust == null) break;
+			System.out.println("Processing Customer with ID="+cust.getId());
+		}
+	}
+
+}
+
+52. Total elements in a binary tree
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static int totalElements(node root) {
+            if(root == null) {
+                return 0;
+            } else {
+                return (1 + totalElements(root.lc) + totalElements(root.rc));
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        node root = null;
+        //node root = new node(10);
+        // root.insert(root, 4);
+        // root.insert(root, 9);
+        // root.insert(root, 12);
+        // root.insert(root, 18);
+        // root.insert(root, 1);
+        // root.insert(root, 6);
+        // root.insert(root, 13);
+        
+        System.out.println("Number of elements in Binary tree are " + node.totalElements(root));
+    }
+}
+
+53. Number of leaf nodes in a binary tree
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+        static int leafNodes = 0;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static void totalLeaves(node root) {
+            if(root == null) {
+                return;
+            } else if (root.lc == null && root.rc == null) {
+                System.out.println(root.value + " is a leaf");
+                leafNodes++;
+                return;
+            } else {
+                totalLeaves(root.lc);
+                totalLeaves(root.rc);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        //node root = null;
+        node root = new node(10);
+        root.insert(root, 4);
+        root.insert(root, 9);
+        root.insert(root, 12);
+        root.insert(root, 18);
+        root.insert(root, 1);
+        root.insert(root, 6);
+        root.insert(root, 13);
+
+        node.totalLeaves(root);
+        
+        System.out.println("Number of elements in Binary tree are " + node.leafNodes);
+    }
+}
+
+54. Checking both trees are structurally equal :-
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public  static boolean sameStructure(node root, node root1) {
+            if(root == null && root1 == null) {
+                return true;
+            } else if(root == null || root1 == null) {
+                return false;
+            } else if(root.value == root1.value 
+            && sameStructure(root.lc, root1.lc) 
+            && sameStructure(root.rc, root1.rc)) {
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    public static void main(String[] args) {
+        //node root = null;
+        node root = new node(10);
+        root.insert(root, 4);
+        root.insert(root, 9);
+        root.insert(root, 12);
+        root.insert(root, 18);
+        root.insert(root, 1);
+        root.insert(root, 16);
+        root.insert(root, 13);
+
+        node root1 = new node(10);
+        root.insert(root1, 4);
+        root.insert(root1, 9);
+        root.insert(root1, 12);
+        root.insert(root1, 18);
+        root.insert(root1, 1);
+        root.insert(root1, 16);
+        root.insert(root1, 13);
+
+        System.out.println("Both the trees a Structurally same = " + node.sameStructure(root, root1));
+    }
+}
+
+55. Maximum sum of any level in a tree :-
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public void zigZag(node root) {
+            Queue<node> currentList = new LinkedList<>();
+            Queue<node> nextList = new LinkedList<>();
+            Queue<node> temp;
+            node tempNode;
+            int max = 0;
+            int sum = 0;
+            int level = 0;
+            int maxLevel = 0;
+            currentList.add(root);
+            max = root.value;
+            while(!currentList.isEmpty()) {
+                tempNode = currentList.poll();
+                sum += tempNode.value;
+                if(tempNode.lc != null) {
+                    nextList.add(tempNode.lc);
+                }
+                if(tempNode.rc != null) {
+                    nextList.add(tempNode.rc);
+                }
+                 if(currentList.isEmpty()) {
+                    temp = currentList;
+                    currentList = nextList;
+                    nextList = temp;
+                    if(max < sum) {
+                        max = sum;
+                        maxLevel = level;
+                    }
+                    sum = 0;    
+                    level++;
+                }
+            }
+            System.out.println("Max sum is " + max + " for level " + maxLevel);
+        }
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(10);
+        root1.insert(root1, 4);
+        root1.insert(root1, 9);
+        root1.insert(root1, 12);
+        root1.insert(root1, 18);
+        root1.insert(root1, 1);
+        root1.insert(root1, 6);
+        root1.insert(root1, 13);
+        root1.zigZag(root1);
+    }
+}
+
+56. Printing all paths  of a tree with path's sum:-
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static void printPaths(node root, List<Integer> path, int length) {
+            if(root == null) {
+                return;
+            }
+            path.add(length, root.value);
+            length++;
+            if(root.lc == null && root.rc == null) {
+                printArrayList(path, length);
+                return;
+            }
+            printPaths(root.lc, path, length);
+            printPaths(root.rc, path, length);
+        }
+
+        public static void printArrayList(List<Integer> path, int length) {
+            int sum = 0;
+            for(int i = 0; i < length; i++) {
+                sum += path.get(i);
+                System.out.print(path.get(i) + " -> ");
+            }
+            System.out.print("Has sum = " + sum + "\n");
+        }
+
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(10);
+        root1.insert(root1, 4);
+        root1.insert(root1, 9);
+        root1.insert(root1, 12);
+        root1.insert(root1, 18);
+        root1.insert(root1, 1);
+        root1.insert(root1, 6);
+        root1.insert(root1, 13);
+        List<Integer> path = new ArrayList<>();
+        node.printPaths(root1, path, 0);
+    }
+}
+
+57. Finding element in a row-wise and column-wise sorted 2d-array
+
+int i = rows - 1;
+int j = 0;
+
+while(i >= 0 && j < columns) {
+    if(array[i][j] > target) {
+        j++;
+    } else if(array[i][j] < target) {
+        i--;
+    } else {
+        return array[i][j];
+    }
+}
+
+
+58. Number of trailing zeroes given n!
+
+int c = 0;
+if(n < 0) {
+    return -1;
+} else {
+    for(int i = 5; n / i > 0; i *= 5) {
+        c += n / i;
+    }
+}
+return c;
+
+59. Longest palindromic substring in a present in a given string
+
+class java_rough {
+    public static void main(String[] args) {
+        String input = "ababbcbba";
+        int start, end, length, palindromeEnd, palindromeStart, maxLength, currentLength;
+        length = input.length();
+        maxLength = 1;
+        palindromeStart = 0;
+        palindromeEnd = 0;
+        for(int i = 0; i < length; i++) {
+            start = i;
+            end = i + 1;
+            currentLength = 1;
+            while(start >= 0 && end < length && input.charAt(start) == input.charAt(end)) {
+                currentLength = end - start + 1;
+                start--;
+                end++;
+            }
+            if(maxLength < currentLength) {
+                maxLength = currentLength;
+                palindromeStart = start + 1;
+                palindromeEnd = end - 1;
+            }
+
+            start = i - 1;
+            end = i + 1;
+            currentLength = 1;
+            while(start >= 0 && end < length && input.charAt(start) == input.charAt(end)) {
+                currentLength = end - start + 1;
+                start--;
+                end++;
+            }
+            if(maxLength < currentLength) {
+                maxLength = currentLength;
+                palindromeStart = start + 1;
+                palindromeEnd = end - 1;
+            }
+        }
+        System.out.println("The length of longest palindromic substring is = " + maxLength);
+        for(int i = palindromeStart; i <= palindromeEnd; i++) {
+            System.out.print(input.charAt(i));
+        }
+    }
+}
+60. Printing all permutations of a String by Backtracking
+
+class java_rough {
+    public static String swap(String sample, int i, int j) {
+        if(i != j) {
+            char temp, array[];
+            array = sample.toCharArray();
+
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+
+            sample = String.valueOf(array);
+        }
+        return sample;
+    }
+
+    public static void permute(String sample, int lower, int upper) {
+        if(lower == upper) {
+            System.out.println(sample);
+        } else {
+            for(int i = lower; i <= upper; i++) {
+                sample = swap(sample, i, lower);
+                permute(sample, lower + 1, upper);
+                sample = swap(sample, i, lower);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        String sample = "abcd";
+        permute(sample, 0, sample.length() - 1);
+    }
+}
+61. Finding max differance between array elements st smaller element comes before larger one
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] sample = new int[]{ 2, 13, 4, 1, 5, 16, 7};
+        int maxDifferance = 0;
+        int minimumElement = sample[0];
+
+        for(int i = 1; i < sample.length; i++) {
+            if(sample[i] - minimumElement > maxDifferance) {
+                maxDifferance = sample[i] - minimumElement;
+            }
+
+            if(sample[i] < minimumElement) {
+                minimumElement = sample[i];
+            }
+        }
+
+        System.out.println("Max differance " + maxDifferance);
+    }
+}
+
+62. To remove trailing and leading blank spaces in java use String.trim();
+
+63. Finding Square root of any number 
+
+class java_rough {
+    public static void main(String[] args) {
+        float square, start, end, mid, temp, counter;
+        square = 50;
+        start = 1;
+        end = square;
+        counter = 0;
+        while(start <= end) {
+            counter++;
+            mid = (start + end) / 2;
+            temp = (mid * mid);
+            System.out.println(temp + ", " + mid + ", " + start + ", " + end);
+            if(temp == square || counter == 40) { //Just a fail safe to avoid infinite looping
+                System.out.println("The square root is " + mid);
+                return;
+            } else if(temp > square) {
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }
+    }
+}
+64. Calculating number of BST possible from n values given
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] keys = new int[]{1,2,3,4};
+        int[] possible = new int[keys.length + 1];
+        possible[0] = 1;
+        possible[1] = 1;
+        for(int i = 2; i < possible.length; i++) {
+            possible[i] = 0;
+            for(int j = 0; j < i; j++) {
+                possible[i] += (possible[j] * possible[i-j-1]);
+            }
+        }
+        System.out.println("Number of possible BS trees " + possible[keys.length]);
+    }
+}
+
+65. Threaded Binary Tree - make inorder traversal faster and do it without stack and without recursion. A binary tree is made 
+threaded by making all right child pointers that would normally be NULL point to the inorder successor of the node and left child
+to inorder predecessor. Node structure for Threaded binary tree is represenred below.
+
+class node {
+    node rc;
+    node lc;
+    int value;
+    int rc_flag; //to tell if node address stored is child or inorder successor
+    int lc_flag; //to tell if node address stored is child or inorder predecessor
+}
+
+the lefmost leaf node's lc and rightmost leaf node's rc points to a dummy node given below :-
+dummy node {
+    node rc = self;
+    node lc = root;
+    int value = null;
+    int rc_flag = 0;
+    int lc_flag = 0;
+}
+
+66. Diameter of a binary tree -> It is the longest distance between any 2 nodes in a tree.
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static int getDiameter(node root) {
+            if(root == null) {
+                return 0;
+            }
+            return Math.max(
+                (1 + getMaxHeight(root.lc) + getMaxHeight(root.rc)), 
+                Math.max(getDiameter(root.lc), getDiameter(root.rc))
+                );
+        }
+
+        public static int getMaxHeight(node root) {
+            if(root == null) {
+                return 0;
+            } else {
+                return (1 + Math.max(getMaxHeight(root.lc), getMaxHeight(root.rc)));
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(10);
+        root1.insert(root1, 4);
+        root1.insert(root1, 9);
+        root1.insert(root1, 12);
+        root1.insert(root1, 3);
+        root1.insert(root1, 1);
+        root1.insert(root1, 6);
+        root1.insert(root1, 2);
+        root1.insert(root1, 7);
+        root1.insert(root1, 8);
+       
+        int diameter = node.getDiameter(root1);
+        System.out.println("The Diameter is " + diameter);
+    }
+}
+
+67. Returning subtree root node having exactly K leaf nodes
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static int getRequiredRoots(node root, int k) {
+            int right, left;
+            if(root == null) {
+                return 0;
+            } else if(root.lc == null && root.rc == null) {
+                return 1;
+            } else {
+                right = getRequiredRoots(root.lc, k);
+                left = getRequiredRoots(root.rc, k);
+                if(k == right + left) {
+                    System.out.println(root.value);
+                    return k;
+                }
+                return (right + left);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(10);
+        root1.insert(root1, 4);
+        root1.insert(root1, 9);
+        root1.insert(root1, 12);
+        root1.insert(root1, 3);
+        root1.insert(root1, 1);
+        root1.insert(root1, 6);
+        root1.insert(root1, 2);
+        root1.insert(root1, 7);
+        root1.insert(root1, 8);
+        root1.insert(root1, 5);
+        int k = 1;
+        node.getRequiredRoots(root1, k);
+    }
+}
+
+68. Diagonal traversal of tree
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static void printDiagonally(node root) {
+            Queue<node> currentQueue = new LinkedList<>();
+            Queue<node> nextQueue = new LinkedList<>();
+            Queue<node> tempQueue;
+            node temp;
+            currentQueue.add(root);
+            while(!currentQueue.isEmpty()) {
+                temp = currentQueue.poll();
+                while(temp != null) {
+                    System.out.println(temp.value);
+                    if(temp.lc != null) {
+                        nextQueue.add(temp.lc);
+                    }
+                    temp = temp.rc;
+                }
+                if(currentQueue.isEmpty()) {
+                    tempQueue = currentQueue;
+                    currentQueue = nextQueue;
+                    nextQueue = tempQueue;
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(10);
+        root1.insert(root1, 4);
+        root1.insert(root1, 9);
+        root1.insert(root1, 12);
+        root1.insert(root1, 3);
+        root1.insert(root1, 1);
+        root1.insert(root1, 6);
+        root1.insert(root1, 2);
+        root1.insert(root1, 7);
+        root1.insert(root1, 8);
+        root1.insert(root1, 5);
+       
+       node.printDiagonally(root1); 
+    }
+}
+
+
+69. Finding lowest common ancestor in a tree :-
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static node lowestCommonAncestor(node root, int value1, int value2) {
+            if(root == null) {
+                return null;
+            } else if(root.value == value1 || root.value == value2) {
+                return root;
+            } else {
+                node left = lowestCommonAncestor(root.lc, value1, value2);
+                node right = lowestCommonAncestor(root.rc, value1, value2);
+
+                if(left != null && right != null) {
+                    System.out.println("Lowest Common ancestor is " + root.value);
+                    return root;
+                } else {
+                    return (left != null ? left : right);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(10);
+        root1.insert(root1, 4);
+        root1.insert(root1, 9);
+        root1.insert(root1, 12);
+        root1.insert(root1, 3);
+        root1.insert(root1, 1);
+        root1.insert(root1, 6);
+        root1.insert(root1, 2);
+        root1.insert(root1, 7);
+        root1.insert(root1, 8);
+        root1.insert(root1, 5);
+
+        node.lowestCommonAncestor(root1, 1, 6);
+       
+    }
+}
+
+
+70. Vertical Traversal of tree :-
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static HashMap<Integer, ArrayList<node>> verticalTraversal(node root, HashMap<Integer, ArrayList<node>> map) {
+            preProcessing(root, map, 0);
+            return map;
+        }
+
+        public static void preProcessing(node root, HashMap<Integer, ArrayList<node>> map, int horizontalDistance) {
+            if(root == null) {
+                return;
+            } 
+            if(!map.containsKey(horizontalDistance)) {
+                map.put(horizontalDistance, new ArrayList<node>());
+            }
+            map.get(horizontalDistance).add(root);
+            preProcessing(root.lc, map, horizontalDistance - 1);
+            preProcessing(root.rc, map, horizontalDistance + 1);
+        }
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(5);
+        root1.insert(root1, 3);
+        root1.insert(root1, 4);
+        root1.insert(root1, 2);
+        root1.insert(root1, 8);
+        root1.insert(root1, 6);
+        root1.insert(root1, 10);
+        root1.insert(root1, 9);
+        root1.insert(root1, 7);
+        root1.insert(root1, 12);
+
+        HashMap<Integer, ArrayList<node>> map = node.verticalTraversal(root1, new HashMap<Integer, ArrayList<node>>());
+
+        for(Integer i : map.keySet()) {
+            System.out.print("Level " + i + " -> ");
+            map.get(i).forEach(node -> System.out.print(node.value + " "));
+            System.out.println("\n");
+        }
+    }
+}
+
+71.  For top view of tree just perform the same as above but instead of printing all print only the first value entered per index.
+
+72. For right/left side view just print the last/first element of lot of tree respectively.
+
+73. Finding diagonal sum of tree
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static HashMap<Integer, Integer> verticalTraversal(node root, HashMap<Integer, Integer> map) {
+            preProcessing(root, map, 0);
+            return map;
+        }
+
+        public static void preProcessing(node root, HashMap<Integer, Integer> map, int horizontalDistance) {
+            if(root == null) {
+                return;
+            } 
+            if(!map.containsKey(horizontalDistance)) {
+                map.put(horizontalDistance, 0);
+            }
+            map.put(horizontalDistance, map.get(horizontalDistance) + root.value);
+            preProcessing(root.lc, map, horizontalDistance + 1);
+            preProcessing(root.rc, map, horizontalDistance);
+        }
+    }
+
+    public static void main(String[] args) {
+        node root1 = new node(5);
+        root1.insert(root1, 3);
+        root1.insert(root1, 4);
+        root1.insert(root1, 2);
+        root1.insert(root1, 8);
+        root1.insert(root1, 6);
+        root1.insert(root1, 10);
+        root1.insert(root1, 9);
+        root1.insert(root1, 7);
+        root1.insert(root1, 12);
+
+        HashMap<Integer, Integer> map = node.verticalTraversal(root1, new HashMap<Integer, Integer>());
+
+        for(Integer i : map.keySet()) {
+            System.out.print("Diagonal Sum is" + " -> " + map.get(i));
+            System.out.println("\n");
+        }
+    }
+}
+
+74. Storing players of match such that traversal gives order having each player in front of him player that he lost to is done by 
+storing players in BST.
+
+75. DS to store dependencies for a module are stored in Directed Acyclic Graph and doing a topological sort on it to get order
+in which dependencies should be installed.
+
+76. Reversing linked list elements k at a times
+
+class java_rough {
+    static class node {
+        public int value;
+        public node link;
+
+        public node(int value) {
+            this.value = value;
+        }
+
+        public static node rotateByKUnits(node start, int k) {
+            int i;
+            node ptr, next, prev;
+            next = null;
+            ptr = start;
+            prev = null;
+            i = 0;
+            while(ptr != null && i < k) {
+                next = ptr.link;
+                ptr.link = prev;
+                prev = ptr;
+                ptr = next;
+                i++;
+            }
+
+            if(next != null) {
+                start.link = rotateByKUnits(next, k);
+            }
+            return prev;
+        }
+    }
+
+    public static void main(String[] args) {
+        node node1 = new node(1);
+        node1.link = new node(2);
+        node1.link.link = new node(3);
+        node1.link.link.link = new node(4);
+        node1.link.link.link.link = new node(5);
+        node1.link.link.link.link.link = new node(6);
+        node1.link.link.link.link.link.link = new node(7);
+        node1.link.link.link.link.link = null;
+
+        
+        node ptr = node.rotateByKUnits(node1, 3);
+        while(ptr != null) {
+            System.out.println(ptr.value);
+            ptr = ptr.link;
+        }
+    }
+}
+
+
+77. DFS in a Directed graph
+
+ - Here vertex is first pushed to stack
+ - In Topological sort vertex is pushed in stack once recursive function is completed for its children
+
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Stack;
+
+class java_rough {
+    public static class Graph {
+        public int vertices;
+        public ArrayList<LinkedList<Integer>> matrix;
+
+        public Graph(int vertices) {
+            this.vertices = vertices;
+            this.matrix = new ArrayList<>();
+            for(int i = 0; i <= vertices; i++) {
+                this.matrix.add(new LinkedList<Integer>());
+            }
+        }
+
+        public void addVertice(int u, int v) {
+            this.matrix.get(u).add(v);
+        }
+
+        public void DFS(int start) {
+            Stack<Integer> vertices = new Stack<>();
+            boolean[] visited = new boolean[this.matrix.size()];
+            int temp = 0;
+
+            vertices.push(start); 
+            while(!vertices.isEmpty()) {
+                temp = vertices.pop();
+                if(visited[temp] != true) {
+                    System.out.println(temp);
+                    visited[temp] = true;
+                }
+
+                for(Integer i : this.matrix.get(temp)) {
+                    if(visited[i] != true) {
+                        vertices.push(i);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Graph graph = new Graph(5);
+
+        graph.addVertice(0, 1);
+        graph.addVertice(1, 2);
+        graph.addVertice(2, 3);
+        graph.addVertice(3, 3);
+        graph.addVertice(0, 2);
+        graph.addVertice(2, 0);
+
+        graph.DFS(2);
+    }
+}
+
+78. Toppological sort in Graph
+
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Stack;
+
+class java_rough {
+    public static class Graph {
+        public int vertices;
+        public ArrayList<LinkedList<Integer>> matrix;
+
+        public Graph(int vertices) {
+            this.vertices = vertices;
+            this.matrix = new ArrayList<>();
+            for(int i = 0; i <= vertices; i++) {
+                this.matrix.add(new LinkedList<Integer>());
+            }
+        }
+
+        public void addVertice(int u, int v) {
+            this.matrix.get(u).add(v);
+        }
+
+        public Stack<Integer> topologicalSort(int start, HashSet<Integer> set, Stack<Integer> stack) {
+            if(!set.contains(start)) {
+                set.add(start);
+            while(!this.matrix.get(start).isEmpty()) {
+                topologicalSort(this.matrix.get(start).poll(), set, stack);
+            }
+            stack.push(start);
+            }
+            return  stack;
+        }
+
+    }
+
+    public static void main(String[] args) {
+        Graph graph = new Graph(5);
+
+        graph.addVertice(5, 2);
+        graph.addVertice(5, 1);
+        graph.addVertice(4, 1);
+        graph.addVertice(2, 3);
+        graph.addVertice(3, 4);
+
+        HashSet<Integer> set = new HashSet<>();
+        Stack<Integer> stack = new Stack<>();
+        stack = graph.topologicalSort(5,set, stack);
+
+        while(!stack.isEmpty()) {
+            System.out.println(stack.pop());
+        }
+    }
+}
+
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Stack;
+
+class java_rough {
+    public static class Graph {
+        public int vertices;
+        public ArrayList<LinkedList<Integer>> matrix;
+
+        public Graph(int vertices) {
+            this.vertices = vertices;
+            this.matrix = new ArrayList<>();
+            for(int i = 0; i <= vertices; i++) {
+                this.matrix.add(new LinkedList<Integer>());
+            }
+        }
+
+        public void addVertice(int u, int v) {
+            this.matrix.get(u).add(v);
+        }
+
+        public void topologicalSortUtil(int start, boolean[] visited, Stack<Integer> vertices) {
+            if(visited[start] != true) {
+                for(int i : this.matrix.get(start)) {
+                    topologicalSortUtil(i, visited, vertices);
+                }
+                visited[start] = true;
+                vertices.push(start);
+            }
+        }
+
+        public void topologicalSort() {
+            Stack<Integer> vertices = new Stack<>();
+            boolean[] visited = new boolean[this.matrix.size()];
+
+            for(int i = 0; i < this.matrix.size(); i++) {
+               topologicalSortUtil(i, visited, vertices);
+            }
+
+            while(!vertices.isEmpty()) {
+                System.out.println(vertices.pop());
+            }
+        }
+
+    }
+
+    public static void main(String[] args) {
+        Graph graph = new Graph(7);
+
+        graph.addVertice(5, 2);
+        graph.addVertice(5, 0);
+        graph.addVertice(4, 0);
+        graph.addVertice(4, 1);
+        graph.addVertice(2, 3);
+        graph.addVertice(3, 1);
+    }
+}
+
+79. OOPs concepts of Aggregation and Composition
+
+ - Aggregation implies a relationship where the child can exist independently of the parent. 
+    Example: Class (parent) and Student (child). Delete the Class and the Students still exist.
+ - Composition implies a relationship where the child cannot exist independent of the parent. 
+    Example: House (parent) and Room (child). Rooms don't exist separate to a House.
+
+80. Get max number of array in 1 swap
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] array = new int[]{9,9,8,4,5,6};
+
+        int maxIndex, minIndex, currentMaxIndex, temp;
+
+        maxIndex = array.length - 1;
+        minIndex = array.length - 1;
+        currentMaxIndex = array.length - 1;
+
+        for(int i = array.length - 2; i >= 0 ;i--) {
+            if(array[i] > array[currentMaxIndex]) {
+                currentMaxIndex = i;
+            } else if(array[currentMaxIndex] > array[i]) {
+                maxIndex = currentMaxIndex;
+                minIndex = i;
+            }
+        }
+        temp = array[minIndex];
+        array[minIndex] = array[maxIndex];
+        array[maxIndex] = temp;
+        
+        for(int i : array) {
+            System.out.println(i);
+        }
+    }
+}
+
+81. Time taken for all apples if Rotten apples are also in the rack 
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[][] rack = new int[][]{
+                     {0, 2, 0, 1, 2},
+                     {0, 1, 1, 1, 1},
+                     {1, 0, 0, 0, 1}
+        };
+        Queue<vertice> queue = new LinkedList<>();
+        vertice temp;
+        int counter = 0;
+
+        for(int i = 0; i < rack.length; i++) {
+            for(int j = 0; j < rack[0].length; j++) {
+                if(rack[i][j] == 2) {
+                    queue.add(new vertice(i, j));
+                }
+            }
+        }
+        queue.add(new vertice(-1, -1));
+        
+        while(!queue.isEmpty()) {
+            temp = queue.poll();
+            if(temp.x == -1 && temp.y == -1) {
+                if(!queue.isEmpty()) {
+                    queue.add(temp);
+                    System.out.println("Added (-1, -1)");
+                    counter++;
+                }
+            } else {
+                queue = addAdjacent(rack, queue, temp);
+            }
+        }
+
+        System.out.println(counter);
+    }
+
+    public static Queue<vertice> addAdjacent(int[][] rack, Queue<vertice> queue, vertice temp) {
+        int x, y;
+
+        x = temp.x;
+        y = temp.y;
+
+        if(isValid(x - 1, y - 1, rack.length, rack[0].length) && rack[x - 1][y - 1] == 1) {
+            queue.add(new vertice(x - 1, y - 1));
+            System.out.println("Added (" + (x - 1) + ", " + (y - 1) + ")");
+            rack[x - 1][y - 1] = 2;
+        }
+
+        if(isValid(x - 1, y, rack.length, rack[0].length) && rack[x - 1][y] == 1) {
+            queue.add(new vertice(x - 1, y));
+            System.out.println("Added (" + (x - 1) + ", " + (y) + ")");
+            rack[x - 1][y] = 2;
+        }
+
+        if(isValid(x - 1, y + 1, rack.length, rack[0].length) && rack[x - 1][y + 1] == 1) {
+            queue.add(new vertice(x - 1, y + 1));
+            System.out.println("Added (" + (x - 1) + ", " + (y + 1) + ")");
+            rack[x - 1][y + 1] = 2;
+        }
+
+        if(isValid(x, y - 1, rack.length, rack[0].length) && rack[x][y - 1] == 1) {
+            queue.add(new vertice(x, y - 1));
+            System.out.println("Added (" + (x) + ", " + (y - 1) + ")");
+            rack[x][y - 1] = 2;
+        }
+
+        if(isValid(x, y + 1, rack.length, rack[0].length) && rack[x][y + 1] == 1) {
+            queue.add(new vertice(x, y + 1));
+            System.out.println("Added (" + (x) + ", " + (y + 1) + ")");
+            rack[x][y + 1] = 2;
+        }
+
+        if(isValid(x + 1, y - 1, rack.length, rack[0].length) && rack[x + 1][y - 1] == 1) {
+            queue.add(new vertice(x + 1, y - 1));
+            System.out.println("Added (" + (x + 1) + ", " + (y - 1) + ")");
+            rack[x + 1][y - 1] = 2;
+        }
+
+        if(isValid(x + 1, y, rack.length, rack[0].length) && rack[x + 1][y] == 1) {
+            queue.add(new vertice(x + 1, y));
+            System.out.println("Added (" + (x + 1) + ", " + (y) + ")");
+            rack[x + 1][y] = 2;
+        }
+
+        if(isValid(x + 1, y + 1, rack.length, rack[0].length) && rack[x + 1][y + 1] == 1) {
+            queue.add(new vertice(x + 1, y + 1));
+            System.out.println("Added (" + (x + 1) + ", " + (y + 1) + ")");
+            rack[x + 1][y + 1] = 2;
+        }
+
+        return queue;
+    }
+
+    public static boolean isValid(int x, int y, int rows, int columns) {
+        if(x >= 0 && x < rows && y >=0 && y < columns) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    static class vertice {
+        int x;
+        int y;
+
+        vertice(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+}
+
+82. Prims Algorithm for Minimum Spanning Tree of a graph
+
+ - Have a adjacencyMatrix having path weights between vertices
+ - Add first vertex into visited set
+ - Create priority queue with Comparator overridden to return smaller path 
+ - Iterate over all connection for first vertex and add them to priority queue
+ - Run a while loop till queue is empty or set size is equal to vertices
+ - In  the loop check if the polled value from queue is already in visited set
+ - If not add this vertex to visited set and iterate over all its connections to add to queue.
+
+
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+
+class java_rough {
+    static class vertex {
+        int path;
+        int value;
+        int parent;
+
+        public vertex(int path, int value, int parent) {
+            this.path = path;
+            this.value = value;
+            this.parent = parent;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[][] adjacencyMatrix = new int[][]{
+                        { 0, 12, 0, 1, 0 },  
+                        { 12, 0, 3, 8, 5 },  
+                        { 0, 3, 0, 0, 7 },  
+                        { 1, 8, 0, 0, 9 },  
+                        { 0, 5, 7, 9, 0 }
+        };
+        int total = 0;
+        vertex temp;
+
+        HashSet<Integer> visited = new HashSet<>();
+        visited.add(0);
+
+        PriorityQueue<vertex> queue = new PriorityQueue<>(new Comparator<vertex>() {
+            @Override
+            public int compare(vertex a, vertex b) {
+                return a.path - b.path;
+            }
+        });
+
+        for(int i = 0; i < adjacencyMatrix[0].length; i++) {
+            if(adjacencyMatrix[0][i] != 0) {
+                queue.add(new vertex(adjacencyMatrix[0][i], i, 0));
+            }
+        }
+
+        while(!queue.isEmpty() && visited.size() != adjacencyMatrix.length) {
+            temp = queue.poll();
+            if(!visited.contains(temp.value)) {
+                visited.add(temp.value);
+                for(int i = 0; i < adjacencyMatrix[0].length; i++) {
+                    if(adjacencyMatrix[temp.value][i] != 0) {
+                        queue.add(new vertex(adjacencyMatrix[temp.value][i], i, temp.value));
+                    }
+                }
+                total += temp.path;
+                System.out.println(temp.parent + " -> " + temp.value);
+            }
+        }
+
+        System.out.println("Total cost of MST = " + total);
+    }
+}
+
+83. Shortest path between vertices
+
+ - Have a adjacencyMatrix having path weights between vertices
+ - Add first vertex into visited set
+ - Create priority queue with Comparator overridden to return smaller path 
+ - Iterate over all connection for first vertex and add them to priority queue
+ - Run a while loop till queue is empty or set size is equal to vertices
+ - In  the loop check if the polled value from queue is already in visited set
+ - If not add this vertex to visited set and iterate over all its connections to add to queue.
+
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+
+class java_rough {
+    static class vertex {
+        int path;
+        int value;
+        int parent;
+
+        public vertex(int path, int value, int parent) {
+            this.path = path;
+            this.value = value;
+            this.parent = parent;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[][] adjacencyMatrix = new int[][]{
+            { 0, 4, 0, 0, 0, 0, 0, 8, 0 }, 
+            { 4, 0, 8, 0, 0, 0, 0, 11, 0 }, 
+            { 0, 8, 0, 7, 0, 4, 0, 0, 2 }, 
+            { 0, 0, 7, 0, 9, 14, 0, 0, 0 }, 
+            { 0, 0, 0, 9, 0, 10, 0, 0, 0 }, 
+            { 0, 0, 4, 14, 10, 0, 2, 0, 0 }, 
+            { 0, 0, 0, 0, 0, 2, 0, 1, 6 }, 
+            { 8, 11, 0, 0, 0, 0, 1, 0, 7 }, 
+            { 0, 0, 2, 0, 0, 0, 6, 7, 0 } 
+        };
+        int total = 0;
+        vertex temp;
+
+        HashSet<Integer> visited = new HashSet<>();
+        visited.add(0);
+
+        PriorityQueue<vertex> queue = new PriorityQueue<>(new Comparator<vertex>() {
+            @Override
+            public int compare(vertex a, vertex b) {
+                return a.path - b.path;
+            }
+        });
+
+        for(int i = 0; i < adjacencyMatrix[0].length; i++) {
+            if(adjacencyMatrix[0][i] != 0) {
+                queue.add(new vertex(adjacencyMatrix[0][i], i, 0));
+            }
+        }
+
+        while(!queue.isEmpty() && visited.size() != adjacencyMatrix.length) {
+            temp = queue.poll();
+            if(!visited.contains(temp.value)) {
+                visited.add(temp.value);
+                for(int i = 0; i < adjacencyMatrix[0].length; i++) {
+                    if(adjacencyMatrix[temp.value][i] != 0) {
+                        queue.add(new vertex(adjacencyMatrix[temp.value][i] + temp.path, i, temp.value));
+                    }
+                }
+                total += temp.path;
+                System.out.println(temp.value + " -> " + temp.path);
+            }
+        }
+
+        System.out.println("Total cost of MST = " + total);
+    }
+}
+
+84. Adding 2 numbers formed from linked list
+
+class java_rough {
+    static class node {
+        int value;
+        node next;
+
+        public node(int value, node next) {
+            this.value = value;
+            this.next = next;
+        }
+
+        public static node reverse(node root) {
+            node next, prev, ptr;
+            ptr = root;
+            next = null;
+            prev = null;
+
+            while(ptr != null) {
+                next = ptr.next;
+                ptr.next = prev;
+                prev = ptr;
+                ptr = next;
+            }
+            return prev;
+        }
+    }
+
+    public static void main(String[] args) {
+        node n3 = new node(8, null);
+        node n2 = new node(2, n3);
+        node n1 = new node(1, n2);
+
+        node m3 = new node(6, null);
+        node m2 = new node(5, m3);
+        node m1 = new node(9, m2);
+
+        n1 = node.reverse(n1);
+        m1 = node.reverse(m1);
+
+        int carry = 0;
+        int sum = 0;
+        node start = n1;
+
+        while(n1 != null && m1 != null) {
+            sum = n1.value + m1.value + carry;
+            carry = sum / 10;
+            sum %= 10;
+            n1.value = sum;
+            n1 = n1.next;
+            m1 = m1.next;
+        }
+
+        start = node.reverse(start);
+
+        if(carry > 0) {
+            System.out.print(carry);
+        }
+
+        while(start != null) {
+            System.out.print(start.value);
+            start = start.next;
+        }
+        
+    }
+}
+
+85. Get last child who will receive toy when sitting circulalry
+
+class java_rough {
+    public static void main(String[] args) {
+        int children = 5;
+        int toys = 32;
+        int start = 4;
+        
+        int r = toys % children;
+
+        if(r == 0) {
+            if(start == 1) {
+                System.out.println(children);
+            } else {
+                System.out.println(start - 1);
+            }
+        } else {
+            if((start + (r - 1)) % children == 0) {
+                System.out.println(1);
+            } else {
+                System.out.println((start + (r - 1)) % children);
+            }
+            
+        }
+    }
+}
+
+86. Flattening linked list :-
+
+import java.util.LinkedList;
+
+class java_rough {
+    static class Node {
+        int data; 
+        Node right, down; 
+        Node(int data) 
+        { 
+            this.data = data; 
+            right = null; 
+            down = null; 
+        }
+        
+        static Node flatten(Node root) {
+            Node next;
+            while(root != null && root.right != null) {
+                next = root.right.right;
+                root.right.right = null;
+                root = merge(root, root.right);
+                root.right = next;
+            }
+            return root;
+        }
+                
+
+        static Node merge(Node list1, Node list2) {
+            Node ptr1, ptr2, next2, head;
+            head = list1;
+            ptr1 = head.down;
+            ptr2 = list2;
+
+            while(ptr1 != null && ptr2 != null) {
+                if(ptr1.data > ptr2.data) {
+                    System.out.println(ptr1.data + " is bigger than " + ptr2.data);
+                    head.down = ptr2;
+                    next2 = ptr2.down;
+                    ptr2.down = ptr1;
+                    ptr2 = next2;
+                } else {
+                    head = ptr1;
+                    System.out.println("Head is at " + head.data);
+                    ptr1 = ptr1.down;
+                }
+            }
+            if(ptr2 != null) {
+                head.down = ptr2;
+            }
+            return list1;
+        }
+    }
+
+    public static void main(String[] args) {
+       Node n1 = new Node(5);
+       Node n11 = new Node(7);
+       Node n12 = new Node(8);
+       Node n13 = new Node(30);
+
+       Node n2 = new Node(10);
+       Node n21 = new Node(20);
+
+       Node n3 = new Node(19);
+       Node n31 = new Node(22);
+       Node n32 = new Node(50);
+
+       n1.right = n2;
+       n2.right = n3;
+       
+       n1.down = n11;
+       n11.down = n12;
+       n12.down = n13;
+
+       n2.down = n21;
+
+       n3.down = n31;
+       n31.down = n32;
+
+       Node start = Node.flatten(n1);
+
+       while(start != null) {
+           System.out.println(start.data);
+           start = start.down;
+       }
+    }
+}
+
+
+
+//https://www.geeksforgeeks.org/top-20-linked-list-interview-question/
+//https://www.geeksforgeeks.org/find-whether-subarray-form-mountain-not/
+//Ensuring Thread Safety for singleton class
+//e15844676c314f9b050bf5201f992d9fa57c155d488c19a233cccbdb135911d6
+
+
+Important Algos :-
+1. DFS
+2. BFS
+3. Matching brackets using Stacks
+4. Questions on Hash Tables like most zeros in an matrix
+5. Trie
+
+//Find the 2nd smallest number in an array  
+//Pascal triangle returns the value given height and widh  
+//Java Garbage collection questions
+//Threads Concept 
+//Valid comments in code
+//Java 8 concepts  
+//Graphs
+//Ensuring Thread Safety for singleton class
+
+//When to use static
+//Attendance system to find out consecutive presents
+//Big integer / Big Decimal
+//Pagation in JS
+//Indexing in DB
+//Why to use right join
+//Uses of static and inner static nested classes
+//Advantages of iterators and differance between iterators of different colletions.
+//Differance between git merge and git rebase.
+//Advantages of spring boot
+//Hibernate - persistance layer
+//https://artoftesting.com/interviewSection/sql-queries-for-interview.html
+
+
