@@ -3526,9 +3526,82 @@ class java_rough {
     }
 }
 
+89. Finding if Directed graph has a cycle
+
+  - Back edges, which point from a node to one of its ancestors
+  - If there is a back edge ie graph has cycle
+  - Back edge is when a vertex is visited again via a vertex that is not its parent
+
+  import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Stack;
+
+class java_rough {
+    public static class Node {
+        int value;
+        int parent;
+
+        public Node(int value) {
+            this.value = value;
+        }
+    }
+    public static class Graph {
+        int vertices;
+        ArrayList<LinkedList<Node>> matrix = new ArrayList<>();
+
+        public Graph(int vertices) {
+            this.vertices = vertices;
+            for(int i = 0; i <= vertices; i++) {
+                matrix.add(new LinkedList<Node>());
+            }
+        }
+
+        public void addEdge(Node a, Node b) {
+            this.matrix.get(a.value).add(b);
+        }
+
+        public void hasCycle(Node start, HashSet<Node> visited, HashSet<Integer> completed, int parent) {
+            Node temp;
+            if(!visited.contains(start)) {
+                start.parent = parent;
+                visited.add(start);
+                while(!this.matrix.get(start.value).isEmpty()) {
+                    temp = this.matrix.get(start.value).poll();
+                    temp.parent = start.value;
+                    hasCycle(temp, visited, completed, start.value);
+                    completed.add(temp.value);
+                }
+            } else {
+                if(!completed.contains(start.value)) {
+                    System.out.println("We have a cycle with edge " + start.parent + " -> " + start.value);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Node node1 = new Node(1);
+        Node node2 = new Node(2);
+        Node node3 = new Node(3);
+        Node node4 = new Node(4);
+
+        Graph graph = new Graph(4);
+
+        graph.addEdge(node2, node1);
+        graph.addEdge(node3, node1);
+        graph.addEdge(node1, node4);
+        graph.addEdge(node4, node3);
+
+        HashSet<Node> visited = new HashSet<>();
+        HashSet<Integer> completed = new HashSet<>();
+
+        graph.hasCycle(node2, visited, completed, 0);
+
+    }
+}
 
 
-//https://www.geeksforgeeks.org/top-20-linked-list-interview-question/
 //https://www.geeksforgeeks.org/find-whether-subarray-form-mountain-not/
 //Ensuring Thread Safety for singleton class
 //e15844676c314f9b050bf5201f992d9fa57c155d488c19a233cccbdb135911d6
