@@ -1,0 +1,507 @@
+========================================== MISLLANEOUS ===============================================================
+1. Resizing of array should be done exponenetially to get insertion time complexity as O(1)
+========================================== JAX-RS ===============================================================
+1. REST services borrow the below mentioned mechanisms from HTTP :-
+    -   Resource based URL's
+    -   HTTP methods are used {GET, PUT, POST, DELETE}
+    -   Responce responds back with appropriate HTTP status codes.
+    -   Responce should have appropriate headers like content-type.
+
+2. The REST Resource URI's are of 2 types
+    -   Instance URI - Get details for single Resource. EX - /messages/{messageId}
+    -   Collection URI - Get a collection of details. EX - /messages
+
+3. Query parameters can be used for Pagination and Filtering. EX - /messages/{messageId}?results=10&year=2014.
+
+4. When creating a new resource instance we use the POST method with collections URI. EX - /messages
+
+5.  Idempotent methods - GET, PUT, DELETE {Can be repeated}
+    Non-Idempotent methods - POST
+
+6. The different error codes classes are mentioned below :-
+    -   1XX - Informational(100: Continue, 101: Switching Protocols)
+    -   2XX - Success(200: OK, 201: created, 202: Accepted)
+    -   3XX - Redirection(301 Moved Permanently, 302 Found, 305 Use Proxy)
+    -   4XX - Client error(400 Bad Request, 401 Unauthorized, 403 Forbidden,  404 Not Found)
+    -   5XX - Server error(500 Internal Server Error, 501 Not Implemented, 502 Bad Gateway, 503 Service Unavailable)
+
+7. HATEOAS is a way to provide client link to various resources as a responce to an api call so that no URL creation has to be done at client side.
+
+8. In SOAP services only one API end point is exposed and the request body contains details for what operation is to be performed.
+
+9. According to Richardson Maturity Model below mentioned are the levels of REST service achived :-
+
+    -   Lvl 0 - Using single API endpoint
+    -   Lvl 1 - Using resource based URI'service
+    -   Lvl 2 - Using HTTP methods {POST, PUT etc}
+    -   Lvl 3 - HATEOAS
+
+10. JAX-RS is a set of interfaces and annotations that has api's for REST services. Library classes like jersey or RESTeasy 
+implement these interfaces and make sense of the annotations wherever the JAX-RS api's are used. Every JAX-RS Library comes
+with a copy of JAX-RS. Methods you get from Jersey for basic rest API are:
+@GET
+	@Path("/{messageId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@QueryParam("year") int year,
+	@BeanParam MessageFilterBean messageFilterBean
+	public Message getMessage(@PathParam("messageId") long messageId) {
+		return MessageService.getMessage(messageId);
+	}
+
+11. jaxb is used by java to convert response to XML file.
+
+12. Always have a no-arg constructor when returning XML/JSON responce as the associated libraries uses it internally.
+========================================== GIT COMMITS===============================================================
+13. @QueryParam URL design = http://localhost:8080/messanger/webapi/messages?start=0&size=2
+
+14. Some important params that we can extract from incoming request :-
+
+    -   @MatrixParam    -> Similar as @QueryParam but uses ; to seprate values;
+    -   @HeaderParam    -> Get token value sent in header.
+    -   @CookieParam    -> Get token value sent in cookie.
+    -   @Context        -> This cannot annotate to any datatype but only few selected ones like 'class:UriInfo, HttpHeaders' and 
+                           is used to get details about the request without specifying details if you don't know them before hand,
+                           like AbsolutePath, ContextPath, QueryParams, Cookies etc
+
+15. Responce object can be returned instead of actual object as Responce class has methods to return any class entity along with
+editing HTTP status codes (.status(Status.CREATED)), return an object/value (.entity), sending URI along with status code 201
+(.created(new URI("/messanger/webapi/messages/ + message.getId())));
+
+EX - 
+@POST
+	public Response addMessage(Message message, @Context UriInfo uriInfo) {
+		
+		Message newMessage = messageService.addMessage(message);
+		String newId = String.valueOf(newMessage.getId());
+		URI uri = uriInfo.getAbsolutePathBuilder().path(newId).build();
+		return Response.created(uri)
+				.entity(newMessage)
+				.build();
+	}
+
+16. A basic exception handlind example for REST calls :-
+
+    //method that may have exception scenario
+    public Message getMessage(long id) {                                
+            Message message = messages.get(id);
+            if (message == null) {
+                throw new DataNotFoundException("Message with id " + id + " not found");
+            }
+            return message;
+        }
+
+    public class DataNotFoundException extends RuntimeException {       //Custom exception handling class
+	private static final long serialVersionUID = -6328286661536343936L;
+	public DataNotFoundException(String message) {
+		super(message);
+	}
+
+    //Error object Class
+    @XmlRootElement
+    public class ErrorMessage {
+
+	private String errorMessage;
+	private int errorCode;
+	private String documentation;
+	
+	public ErrorMessage() {
+		
+	}
+		
+	public ErrorMessage(String errorMessage, int errorCode, String documentation) {
+		super();
+		this.errorMessage = errorMessage;
+		this.errorCode = errorCode;
+		this.documentation = documentation;
+	}
+
+
+    // Class to implement and Map exception to responce when thrown
+    @Provider //annotation to let jax.rs know that this class exists
+    public class DataNotFoundExceptionMapper implements ExceptionMapper<DataNotFoundException> { 
+
+	@Override
+	public Response toResponse(DataNotFoundException ex) {
+		ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), 404, "http://javabrains.koushik.org");
+		return Response.status(Status.NOT_FOUND)
+				.entity(errorMessage)
+				.build();
+	}
+	
+
+    //Providing generic exception handler class
+    @Provider
+    public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
+
+	@Override
+	public Response toResponse(Throwable ex) {
+		ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), 500, "http://javabrains.koushik.org");
+		return Response.status(Status.INTERNAL_SERVER_ERROR)
+				.entity(errorMessage)
+				.build();
+	} 
+
+17. The Jersey Library provides you with 'WebApplicationException' where you can set from a set of constructor option
+on how to handle an error scenario that may happen in a web-application.
+EX - 
+    public Comment getComment(long messageId, long commentId) {
+		ErrorMessage errorMessage = new ErrorMessage("Not found", 404, "http://javabrains.koushik.org");
+		Response response = Response.status(Status.NOT_FOUND)
+				.entity(errorMessage)
+				.build();
+		
+		Message message = messages.get(messageId);
+		if (message == null) {
+			throw new WebApplicationException(response); //Creating your responce and sending
+		}
+		Map<Long, Comment> comments = messages.get(messageId).getComments();
+		Comment comment = comments.get(commentId);
+		if (comment == null) {
+			throw new NotFoundException(response); //Using a standard error code part of WebApplicationException
+		}
+		return comment;
+	}  
+
+18. Content negociation is client and server using header values to communicate type (XML, JSON etc) that will be sent and 
+received amongst them. One method to enable multiple types in server side in jersey is :
+@Consumes(value = { MediaType.APPLICATION_JSON, MediaType.TEXT_XML })
+You can set @Consumes or @Produces at method levels as well, based on this request of same HTTP method will select method on type 
+sent from client.
+==================================================MAVEN Fundamentals==============================================================
+1. POM has project name and itss group and artifact ids
+2. POM needs only entry level dependancy
+3. COMMANDS :
+	- mvn compile (uses compile plugin, no need to mention in pom if no custom config is required)
+	- mvn package -> creates JAR/WAR
+	- mvn clean -> removes target folder from project
+	- java -cp *.jar class_name -> To run main method in class_name from jar
+	- mvn jetty:run(Uses jetty plugin, you can use scan interval for getting new changes deployed)
+4. Maven creates a local repo and checks it first for artifacts then goes to internet maven repo
+5. PHASES OF MAVEN BUILDCYCLE:
+	Validate (check if all information necessary for the build is available) -> Compile -> Test -> package -> 
+	install(pushes artifact to local repo) -> deploy (pushes artifact to remote repo)
+6. Default scope in maven is compile for dependancy.
+7. Maven dependency scope provided is used during build and test the project. They are also required to run, but should not exported, 
+   because the dependency will be provided by the runtime, for instance, by servlet container or application server.
+8. 
+
+=================================================SPRING Fundamentals==============================================================
+Summary :-
+Two distinct types of Spring IoC Containers which are a BeanFactory Container and ApplicationContext Container in Spring Framework:-
+
+- Spring BeanFactory Container is the simplest container which provides basic support for DI. It is defined by org.springframework
+.beans.factory.BeanFactory interface. A BeanFactory is essentially nothing more than the interface for an advanced factory capable 
+of maintaining a registry of different beans and their dependencies. The BeanFactory enables you to read bean definitions and 
+access them using the bean factory.
+- ApplicationContext container adds more enterprise-specific functionality such as the ability to resolve textual messages from a 
+properties file and the ability to publish application events to interested event listeners. This container is defined by the org
+.springframework.context.ApplicationContext interface.
+
+1. Namespace declaration in applicationContext.xml which is located in src/main/resources file which is used for Spring configuration 
+are basically libraries that help in configuration and Validation operations.
+
+2. Beans are  POJOs that Spring configures. Simply put mentioning in file that we need a bean allows you to use it instead of 
+hard-coding it with new keybord in a class. Also use interfaces while configuring beans as principal of 'Sepration of Concerns' helps 
+you to update the implementation class whenever you want without need of changing applicationContext.xml.
+
+3. To enable annotation based bean configuration for your project add the below in applicationContext.xml :-
+	<context:annotation-config/> //telling that we use annotations
+	<context:component-scan base-package="com.project"/> //telling where is the root folder for the files that are bound by annotations
+
+4. Annotation are of 3 types at class level which are symantically same but have different significance by convention as mentioned :-
+	- @Component -> Any POJO
+	- @Service -> Class that implements business logic
+	- @Repository -> Classes that interact with DB.
+
+5. Using @Autowire annotation you can add any class as dependancy in your class in 3 ways as shown below :-
+	- Member level :-
+		@Autowire
+		private RequiredClass1 requiredClass1;
+	
+	- Setter Injection :-
+		@Autowire
+		public void setRequiredClass(RequiredClass1 requiredClass1) {
+			this.requiredClass1 = requiredClass1;
+		}
+
+	- Constructor Injection :-
+		@Autowire
+		public CurrentClass(RequiredClass1 requiredClass1) {
+			this.requiredClass1 = requiredClass1;
+		}
+
+6. Using java you can also create you spring configuration file as shown below. You can name your file anything just use the same 
+name in your main method when running application and giving name of config file.
+
+	@Configuration
+	public class AppConfig {
+		@Bean(name = "serviceClass")
+		public MyServiceInterface getServiceClassBean() {
+			return new MyServiceImpl();
+		}
+	}
+
+7. Any bean has 5 scopes as described below :-
+	- Singleton - Single instance per Spring container and is the default bean scope. Below is an code snippet.
+	@Service
+	@Scope("singleton")
+	public class CurrentClass() {
+		//functions
+	}
+
+	- Prototype - This scopes a single bean definition to have any number of object instances. Below is an code snippet.
+	@Service
+	@Scope("prototype")
+	public class CurrentClass() {
+		//functions
+	}
+
+	** As a rule, use the prototype scope for all state-full beans and the singleton scope for stateless beans.**
+
+	For web projects
+	- Request - This scopes a bean definition to an HTTP requestt; that is each and every HTTP request will have its own 
+	instance of a bean created off the back of a single bean definition.
+	- Session - This scopes a bean definition to an HTTP session.
+	- Global  - This scopes a bean definition to a global HTTP session
+
+
+
+==================================================SPRING MVC FRAMEWORK=============================================================
+
+1. Common Vocabulary :-
+	- Dispatcher Servlet - The entry / configuration point of application
+	- Handles the request and determines which view to route to.
+	- Request Mapping - The URL and the HTTP method type the function is bind to.
+	- View Resolver - Used to locate JSP pages
+	- Servlet - config - configuration file per Dispatcher Servlet
+	- POJO - Plain Old Java Object, which has no arg constructor and has private fields with associated getter/setter methods.
+	- Bean - It is a POJO that is configured by Spring to be used within the application.
+
+2. Basic Components of Spring MVC project :-
+	- web.xml
+	- servlet-config.xml
+	- Controller class - Class that has the annotations
+	- View - JSP pages to desplay rendered datatype
+
+3. Declaring your Dispatcher Servlet in web.xml:-
+
+		<servlet>
+			<servlet-name>fitTrackerServlet</servlet-name>
+			<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+			<init-param>
+				<param-name>contextConfigLocation</param-name>
+				<param-value>/WEB-INF/config/servlet-config.xml</param-value>
+			</init-param>
+		</servlet>
+		
+		<servlet-mapping>
+			<servlet-name>fitTrackerServlet</servlet-name>
+			<url-pattern>*.html</url-pattern>
+		</servlet-mapping>
+
+4. Adding servlet-config.xml under WEB-INF to tell that we will use annotations for configuration and where classes with annotations
+will be.
+
+	<mvc:annotation-driven />
+		<context:component-scan base-package="com.pluralsight.controller" />
+5. Telling about location of your JSP pages using 'p' which stands for property namespace. Namespaces are internal utility methods.
+
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />
+
+6. For Validation of data sent from client you can use JSR-303 standards which involve use of dependancy 'hibernate-validator'.
+
+public String updateGoal(@Valid @ModelAttribute("goal")Goal goal, BindingResult result) { //@Valid annotation starts hibernate-validator rules check
+
+	
+		System.out.println("result has errors: " + result.hasErrors()); //result object tells if the constraints are violated
+		
+		System.out.println("Minutes updated: " + goal.getMinutes());
+		
+		return "redirect:addMinutes.html";
+		
+	}
+
+========================================JUNIT and MOKITO===============================================
+
+1. A unit test has 4 phases :-
+	- Setup
+	- Execution of method under test
+	- Verification by asserting result of the test
+	- Teardown of resources created
+	
+2. Junit key points :-
+	- @Test annotation marks a function as test classes
+	- Assert class has many static functions to verify output
+	- @Before and @After runs before and after every @Test respectively, whereas @BeforeClass and 
+	@AfterClass runs once per class.
+	
+3. Basic Mokito functions :-
+	- Mockito.mock(sample.class) to create mock of a class done during setup phase usually.
+	- Mokito.when(className.functionName()).thenReturn(output) in setup to provide mocked output.
+	- Mokito.verify(mockOrderDao).findById(idValue)
+
+4. You can also use @Mock for your dependancy classes, but remember to add below in @Before part :-
+	- MokitoAnnotations.initMocks(this);
+
+5. Common when/then constraints on mocked methods are :-
+	- thenReturn -> Returns an object/value
+	- thenThrow -> Returns an exception type
+	- doThrow -> In case of void methods use first get the doThrow output in a Stubber object and then
+	on that object apply your when condition.
+	- thenCallRealMethod -> calls the actual method for the mocked class.
+
+6. Mokito allows you to test if your method was called :-
+	- Mokito.verify(className, VerificationSettings.times(number_of_times_invoked)).functionName();
+	- You can also use times, atleast(n), atleastOnce(), atmost(n), never
+
+7. Argument matching while mocking functions uses common Matcher classes below functions :-
+	- Matchers.eq() -> Used for equals as you have to use implicit or explicit matching only for all fields.
+	- (data_type) Matchers.any()
+	- Matchers.anyInt() and other generic datatypes
+	- Matchers.any(String.class)
+	- Matchers.eq/contains/startsWith/EndsWith/match(regex) can be used for strings
+
+8. To verify that services are executed in order we can use the below mentioned functionalities :-
+	- InOrder inOrderVerifier = Mockito.inOrder(mockService1, mockService2);
+		 inOrderVerifier.verify(mockService1).function1();
+		 inOrderVerifier.verify(mockService2).function2();
+
+9. Mockito provides a utility to capture arguments tha are being passed to functiona calls to improve the scope 
+of what we can to test. The below code snippet demos that approach :-
+
+	ArgumentCaptor<className> classArgumentCaptor = ArgumentCaptor.forClass(className.class);
+	Mokito.verify(mockOrderDao).methodName(classArgumentCaptor.capture());
+	Assert.assertEquals(expectedValue, classArgumentCaptor.someFunction());
+
+
+==========================================================Lambda Expressions======================================================
+
+1. Common methods for Iterable and Collection interfaces :-
+	- 	List<Person> person = ...;
+		person.forEach(System.out::println); //This method of calling functions is called method reference
+
+	-	person.removeIf(person -> person.getAge < 18);		//The condition passed as function is called predicate
+
+2.	For List interface :-
+	-	person.replaceAll(String::toUpperCase);
+	- 	person.sort(
+			Comparator.comparing(Person::getName).reversed()
+												 .thenComparing(Person::getAge)
+	);
+
+3. 	For Map interface :-
+	-	Map<City, List<Names>> = ...;
+		map.forEach((city, list) ->
+			System.out.println(city + ":" + list.size() + "people");
+	)
+
+	-	map.getOrDefault(boston, emptyList());	//It will either give associated value or return value passed  as second parameter
+
+	-	map.putIfAbsent(boston, new ArrayList<Names>());	//It will add second parameter as value if key does not exist. It also returns new
+															//the previous value associated with this key null if key was not present earlier
+
+	-	map.replace(key, existingValue<optional>, newValue) //Replaces value for given key if matches provided existing value
+
+	-	numbers.replaceAll((key, oldValue) -> oldValue * oldValue);
+
+	-	courseMap.entrySet().removeIf(e - > e.getKey().equals("Java"));
+
+	-	public static void main(String[] args) 
+    { 
+  
+        // Create a Map and add some values 
+        Map<String, String> map = new HashMap<>(); 
+        map.put("Name", "Aman"); 
+        map.put("Address", "Kolkata"); 
+  
+        // Print the map 
+        System.out.println("Map: " + map); 
+  
+        // remap the values using compute() method 
+        map.compute("Name", (key, val) 
+                                -> val.concat(" Singh")); 
+        map.compute("Address", (key, val) 
+                                   -> val.concat(" West-Bengal")); 
+  
+        // print new mapping 
+        System.out.println("New Map: " + map); 
+    } 
+
+	- 	Similar functions are computeIfAbsent and computeIfPresent with condition being that the passed function and BiFunction 
+		respectively will be called to compute new associated value with passed parameter key if it is absent or is it is present.
+
+	- map2.forEach(
+		(key, value) ->
+			map1.merge(key, value, 
+						(existingValue, newValue) -> {
+							existingValue.addAll(newValue);
+							return existingValue;
+						})
+	);
+
+4. When you create a stream, it is always a serial stream unless otherwise specified. To create a parallel stream, invoke the operation Collection.parallelStream. Alternatively, invoke the operation BaseStream.parallel. For example, the following statement calculates the average age of all male members in parallel:
+
+	double average = roster
+		.parallelStream()
+		.filter(p -> p.getGender() == Person.Sex.MALE)
+		.mapToInt(Person::getAge)
+		.average()
+		.getAsDouble();
+	
+	For such use cases you should use predicate in filter function that is associative.
+
+5. Optional is a wrapper class like Integer that might be empty. Optional may contain a list as well.
+
+6. Stream is a new interface in Java8 to perform map/filter/reduce operations on collections without creating new intermidiate collections
+reducing the memory and processing overhead.
+	-	Stream does not hold any data, it just processes data from a source.
+	-	The size of the source is not known at runtime.
+	-	EX: personList.stream()
+						.map(p -> p.getAge())		//Converts objects list to integer list
+						.filter(age -> age > 20)
+						.forEach(System.out::println);
+	-	Without a terminal operation like forEach or any call that does not retur stream the stream will never process the data.
+	-	EX: personList.stream()
+						.skip(2) //Does not considers first 2 elements 
+						.limit(3) //Takes only 3 elements for stream manipulation
+						.map(p -> p.getAge())		//Converts objects list to integer list
+						.filter(age -> age > 20)
+						.forEach(System.out::println);
+
+	-	Match Reduction EX :
+		boolean b = people.stream.allMatch(p -> p.getAge() > 20);  //Return true only if all elements are true for the condition.
+		Similalry we have anyMatch() and noneMatch().	
+
+	-	Find Reduction EX :
+		Optional<Person> persons = persons.stream()
+											.findAny(p -> p.getName().length() > 10);
+		Similalry we have findFirst().
+
+	- 	Reduce Reduction EX :
+		The reduce reduction predicate should be associative in nature as this error will not be caught and only the answer will be 
+		wrong. Below are its EX :
+		int sumOfAges = people.stream()
+								.reduce(0, (p1, p2) -> p1.getAge() + p2.getAge()); //here 0 is the identity element if no identity
+																				   //element is present then we can provide output 
+																				   //in optional.
+		EX : Third type is using an Accumulator
+		List<Integer> ages = people.stream()
+									.reduce(
+										new ArrayList<Integer>(), 
+										(list, p) -> { 	list.add(p.getAge()) ; return list;},
+										(list1, list2) -> { list1.addAll(list2); return list1;}
+									);
+
+
+
+====================================================SPRING - BOOT==================================================================
+
+1. @EnableAutoConfiguration - Spring Boot automatically configures your application based on the dependencies you have added to the project
+2. The entry point of the spring boot application is the class contains @SpringBootApplication annotation and the main method.
+3. Spring Boot automatically scans all the components included in the project by using @ComponentScan annotation. You can add :-
+@ComponentScan(
+	basePackages = {name of base package}
+	excludeFilters = {Classes you want to exclude}
+)
+4. 
