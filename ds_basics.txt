@@ -2320,6 +2320,13 @@ class java_rough {
         }
     }
 }
+TRICK FOR ROUNDING
+class java_rough {
+    public static void main(String[] args) {
+       float n = 1.23232323f;
+       System.out.println(Math.round(n*n*1000.0) / 1000.0);
+    }
+}
 64. Calculating number of BST possible from n values given
 
 class java_rough {
@@ -3601,7 +3608,331 @@ class java_rough {
     }
 }
 
+90. Writing a Java singleton class
+    class java_rough {
+        private static java_rough java_rough_instance = null;
+        private java_rough() {
+    }
+        private static java_rough getInstance() {
+            if(java_rough_instance == null) {
+                java_rough_instance = new java_rough();
+            }
+            return java_rough_instance;
+        }
+}
 
+91. Finding Kth largest element using heapify
+
+class java_rough {
+    public static void main(String[] args) {
+        int k = 4;
+        int[] record = new int[]{3,5,2,0,1,7,6,5};
+        for(int i = record.length / 2; i >= 0; i--) {
+            heapify(record, i, record.length);
+        }
+        System.out.println("the " + k + "th largest value " + getKthSmallest(record, k));
+    }
+    
+    public static void heapify(int[] record, int index, int size) {
+        int largest, right, left;
+        largest = index;
+        right = 2 * index + 2;
+        left = 2 * index + 1;
+
+        if(left < size &&  record[largest] < record[left]) {
+            largest = left;
+        }
+
+        if(right < size && record[largest] < record[right]) {
+            largest = right;
+        }
+
+        if(largest != index) {
+            swap(index, largest, record);
+            heapify(record, largest, size);
+        }
+    }
+
+    public static void swap(int index, int largest, int[] record) {
+        int temp;
+        temp = record[largest];
+        record[largest] = record[index];
+        record[index] = temp;
+    }
+
+    public static int getKthSmallest(int[] record, int k) {
+        int length = record.length - 1;
+        for(int i = 0; i < k - 1; i++) {
+            swap(0, length, record);
+            length--;
+            heapify(record, 0, length + 1);
+        }
+        return record[0];
+    }
+}
+
+92. Pythagorean Triplets
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] record = new int[]{3, 10, 4, 8, 6, 5};
+        Arrays.sort(record);
+        int first, last;
+        for(int i = record.length - 1; i > 1; i--) {
+            first = 0;
+            last = i - 1;
+            while(first < last) {
+                //System.out.println(first + ", " + last + ", " + i);
+                if((Math.pow(record[first], 2) + Math.pow(record[last], 2)) == Math.pow(record[i], 2)) {
+                    System.out.println(record[first] + ", " + record[last]);
+                    first++;
+                } else if ((Math.pow(record[first], 2) + Math.pow(record[last], 2)) < Math.pow(record[i], 2)) {
+                    first++;
+                } else {
+                    last --;
+                }
+            }
+        }
+    }
+}
+
+92. Minimum differance when distributing chocolates among given students: https://www.geeksforgeeks.org/chocolate-distribution-problem/
+import java.util.Arrays;
+class java_rough {
+    public static void main(String[] args) {
+        int[] chocolatePacks = new int[]{12, 4, 7, 9, 2, 23, 25, 41, 30, 40, 28, 42, 30, 44, 48, 43, 50};
+        int students = 7;
+        int first, last, min;
+        min = Integer.MAX_VALUE;
+        first = 0;
+        last = students - 1;
+        Arrays.sort(chocolatePacks);
+        while(last < chocolatePacks.length) {
+            if(chocolatePacks[last] - chocolatePacks[first] < min) {
+                min = chocolatePacks[last] - chocolatePacks[first];
+            }
+            first++;
+            last++;
+        }
+        System.out.println("Min Diff is " + min);
+    }
+}
+
+93. Stock Exchange problem: https://practice.geeksforgeeks.org/problems/stock-buy-and-sell/
+class java_rough {
+    public static void main(String[] args) {
+        //int[] record = new int[]{23, 13, 25, 29, 33, 19, 34, 45, 65, 67};
+        int[] record = new int[]{100, 180, 260, 310, 40, 535, 695};
+        int last, first;
+        last = 1;
+        first = 0;
+        while(last < record.length) {
+            if(record[last - 1] > record[last]) {
+                if(first == last - 1) {
+                    first = last;
+                } else {
+                    System.out.println("Days: " + first + " " + (last - 1));
+                    first = last;
+                }
+            } else if(last == record.length - 1) {
+                System.out.println("Days: " + first + " " + (last));
+            } 
+            last++;
+        }
+    }
+}
+
+94. Element with left side smaller and right side greater: https://www.geeksforgeeks.org/find-the-element-before-which-all-the-elements-are-smaller-than-it-and-after-which-all-are-greater-than-it/
+class java_rough {
+    public static void main(String[] args) {
+        int[] record = new int[]{5, 1, 4, 3, 16, 8, 10, 17, 19};
+        int[] leftMax = new int[record.length];
+        int[] rightMin = new int[record.length];
+        int max, min, length;
+        length = record.length;
+        max = 0;
+        min = Integer.MAX_VALUE;
+        for(int i = 0; i < length; i++) {
+            leftMax[i] = max;
+            if(max < record[i]) {
+                max = record[i];
+            }
+            rightMin[length - 1 - i] = min;
+            if(min > record[length - 1 - i]) {
+                min = record[length - 1- i];
+            }
+        }
+        for(int i = 0; i < length; i++) {
+            if(leftMax[i] < record[i] && record[i] < rightMin[i]) {
+                System.out.println("Left part < Right part for index: " + i);
+            }
+        }
+    }
+}
+
+95. Converted array should be in form a < b > c < d > e < f: https://practice.geeksforgeeks.org/problems/convert-array-into-zig-zag-fashion/0
+class java_rough {
+    public static void main(String[] args) {
+        //int[] record = new int[]{4, 3, 7, 8, 6, 2, 1};
+        int[] record = new int[]{1, 4, 3, 2};
+        int index = 1;
+        while(index < record.length) {
+            if(index == record.length - 1) {
+                if(record[index - 1] > record[index]) {
+                    swap(record, index, index - 1);
+                }
+            } else {
+                if(record[index - 1] > record[index]) {
+                    swap(record, index, index - 1);
+                } 
+                if(record[index + 1] > record[index]) {
+                    swap(record, index, index + 1);
+                }
+            }
+            index += 2;
+        }
+        for(int i : record) {
+            System.out.println(i);
+        }
+    }
+    public static void swap(int[] record, int index, int next) {
+        int temp;
+        temp = record[index];
+        record[index] = record[next];
+        record[next] = temp;
+    }
+}
+
+96. Reversing order of words in stringimport java.util.Stack;
+class java_rough {
+    public static void main(String[] args) {
+        String input = "getting good at coding needs a lot of practice";
+        Stack<Character> stack = new Stack<>();
+        for(int i = input.length() - 1; i >=0; i--) {
+            if(input.charAt(i) != ' ') {
+                stack.push(input.charAt(i));
+            } else {
+                while(!stack.isEmpty()) {
+                    System.out.print(stack.pop());
+                }
+                System.out.print(input.charAt(i));
+            }
+        }
+        while(!stack.isEmpty()) {
+            System.out.print(stack.pop());
+        }
+    }
+}
+
+97. Recursively remove all adjacent duplicates: https://www.geeksforgeeks.org/recursively-remove-adjacent-duplicates-given-string/
+import java.util.Stack;
+class java_rough {
+    public static void main(String[] args) {
+        String input = "caaabbbaacdddd";
+        Stack<Character> stack = new Stack<>();
+        int flag = 0;
+        int i = 0;
+        char temp;
+        while(i < input.length()) {
+            if(stack.isEmpty() || stack.peek() != input.charAt(i)) {
+                if(flag == 1) {
+                    temp = stack.pop();
+                    System.out.println("popped: " + temp);
+                    flag = 0;
+                    continue;
+                }
+                stack.push(input.charAt(i));
+                System.out.println("pushed: " + input.charAt(i));
+            } else {
+                if(i == input.length() - 1 ) {
+                    stack.pop();
+                }
+                flag = 1;
+            }
+            i++;
+        }
+        printStack(stack);
+    }
+    public static void printStack(Stack<Character> stack) {
+        if(stack.isEmpty()) {
+            return;
+        } else {
+            char temp;
+            temp = stack.pop();
+            printStack(stack);
+            System.out.print(temp);
+        }
+    }
+}
+
+98. Check if a string can be obtained by rotating another string 2 places: https://www.geeksforgeeks.org/check-string-can-obtained-rotating-another-string-2-places/
+class java_rough {
+    public static void main(String[] args) {
+        String input = "amazon";
+        int rotations = 2;
+        String cw, acw, temp;
+        temp = "";
+
+        cw = input.substring(rotations);
+        for(int i = 0; i < rotations; i++) {
+            cw = cw + input.charAt(i);
+        }
+        System.out.println(cw);
+
+        acw = input.substring(0, input.length() - rotations);
+        for(int i = input.length() - rotations; i <= input.length() - 1; i++) {
+            temp = temp + String.valueOf(input.charAt(i));
+        }
+        temp = temp + acw;
+        System.out.println(temp);
+    }
+}
+
+98. Form a palindrome by adding minimum number of alphabets: https://www.geeksforgeeks.org/minimum-insertions-to-form-a-palindrome-dp-28/
+
+class java_rough {
+    public static void main(String[] args) {
+      String input = "abcde";
+      int first, last;
+      first = 0;
+      last = input.length() - 1;
+      System.out.println(getAdditionalCharacters(input, first, last));
+    }
+    public static int getAdditionalCharacters(String input, int first, int last) {
+        if(first == last) {
+            return 0;
+        }
+        if(first == (last - 1)) {
+            return input.charAt(first) == input.charAt(last) ? 
+                    0 : 1;
+        }
+        return input.charAt(first) == input.charAt(last) ? 
+        getAdditionalCharacters(input, first + 1, last - 1) : 
+        (Math.min(getAdditionalCharacters(input, first + 1, last), 
+        getAdditionalCharacters(input, first, last - 1)) + 1);
+    }
+}
+
+99. Longest common prefix in given strings: https://www.geeksforgeeks.org/longest-common-prefix-using-word-by-word-matching/
+
+import java.util.Arrays;
+class java_rough {
+    public static void main(String[] args) {
+      String[] input = new String[]{"gaeeksforgeeks", "geeks", "geek", "geezer"};
+      Arrays.sort(input);
+      int counter = 0;
+      while(counter < input[0].length() && counter < input[input.length - 1].length()) {
+          if(input[0].charAt(counter) != input[input.length - 1].charAt(counter)) {
+            System.out.println(input[0].substring(0, counter));
+            return;
+          } else {
+              counter++;
+          }
+      }
+    }
+}
 //https://www.geeksforgeeks.org/find-whether-subarray-form-mountain-not/
 //Ensuring Thread Safety for singleton class
 //e15844676c314f9b050bf5201f992d9fa57c155d488c19a233cccbdb135911d6

@@ -1,5 +1,30 @@
 ========================================== MISLLANEOUS ===============================================================
 1. Resizing of array should be done exponenetially to get insertion time complexity as O(1)
+
+2. Unchecked exceptions which are subtypes of Error and RuntimeException. Methods also don’t have to declare to throw unchecked 
+   exceptions. It’s because programs typically cannot be recovered from unchecked exceptions.
+
+3. In computer programming, boilerplate code or just boilerplate refers to sections of code that have to be included in many places 
+   with little or no alteration. It is often used when referring to languages that are considered verbose, i.e. the programmer must 
+   write a lot of code to do minimal jobs.
+
+4. Common OOPs concepts: (For Symbols: https://javapapers.com/oops/association-aggregation-composition-abstraction-generalization-realization-dependency/)
+	1. Association: Two independent entities being related. EX: A Student and a Faculty are having an association.
+	
+	2. Aggregation: Aggregation is a special case of association.It signifies one object having another object as its property.
+	   For example consider two classes Student class and Address class. Every student has an address so the relationship between 
+	   student and address is a Has-A relationship. But if you consider its vice versa then it would not make any sense as an 
+	   Address doesn’t need to have a Student necessarily.
+	
+	3. Composition: Composition is a special case of aggregation. It signifies one object having another object as its property but 
+	   the inner object cannot exist without the main outer object. EX: Body: Heart
+
+	4. Generalization: Consider there exists a class named Person. A student is a person. A faculty is a person. Therefore here the 
+	   relationship between student and person, similarly faculty and person is generalization.
+
+	5. Realization: The relationship between the interface and the implementing class.
+
+5. B-trees are used to manage indexes in DBMS.
 ========================================== JAX-RS ===============================================================
 1. REST services borrow the below mentioned mechanisms from HTTP :-
     -   Resource based URL's
@@ -12,6 +37,12 @@
     -   Collection URI - Get a collection of details. EX - /messages
 
 3. Query parameters can be used for Pagination and Filtering. EX - /messages/{messageId}?results=10&year=2014.
+
+ @GET
+    public String getOrders(@QueryParam("stateCode") String stateCode) {
+        return stateCode != null ? getOrdersByState(stateCode)
+                                  : getAllOrders();
+    }
 
 4. When creating a new resource instance we use the POST method with collections URI. EX - /messages
 
@@ -26,6 +57,15 @@
     -   5XX - Server error(500 Internal Server Error, 501 Not Implemented, 502 Bad Gateway, 503 Service Unavailable)
 
 7. HATEOAS is a way to provide client link to various resources as a responce to an api call so that no URL creation has to be done at client side.
+
+public Message getMessage(@PathParam("messageId") long messageId, @Context UriInfo uriInfo) {
+		Message message = MessageService.getMessage(messageId);
+		String uri = uriInfo.getBaseUriBuilder()
+				.path(MessageResource.class)
+				.path(Long.toString(messageId))
+				.build()
+				.toString();
+		message.addLink(uri, "self");
 
 8. In SOAP services only one API end point is exposed and the request body contains details for what operation is to be performed.
 
@@ -52,7 +92,7 @@ with a copy of JAX-RS. Methods you get from Jersey for basic rest API are:
 11. jaxb is used by java to convert response to XML file.
 
 12. Always have a no-arg constructor when returning XML/JSON responce as the associated libraries uses it internally.
-========================================== GIT COMMITS===============================================================
+ 
 13. @QueryParam URL design = http://localhost:8080/messanger/webapi/messages?start=0&size=2
 
 14. Some important params that we can extract from incoming request :-
@@ -169,7 +209,7 @@ received amongst them. One method to enable multiple types in server side in jer
 You can set @Consumes or @Produces at method levels as well, based on this request of same HTTP method will select method on type 
 sent from client.
 ==================================================MAVEN Fundamentals==============================================================
-1. POM has project name and itss group and artifact ids
+1. POM has project name and its group and artifact ids
 2. POM needs only entry level dependancy
 3. COMMANDS :
 	- mvn compile (uses compile plugin, no need to mention in pom if no custom config is required)
@@ -184,11 +224,16 @@ sent from client.
 6. Default scope in maven is compile for dependancy.
 7. Maven dependency scope provided is used during build and test the project. They are also required to run, but should not exported, 
    because the dependency will be provided by the runtime, for instance, by servlet container or application server.
-8. 
 
-=================================================SPRING Fundamentals==============================================================
+=================================================SPRING Fundamentals(IOC)==============================================================
 Summary :-
-Two distinct types of Spring IoC Containers which are a BeanFactory Container and ApplicationContext Container in Spring Framework:-
+Two distinct types of Spring IoC Containers (IoC is also known as dependency injection (DI). It is a process whereby objects define 
+their dependencies, that is, the other objects they work with, only through constructor arguments, arguments to a factory method, 
+or properties that are set on the object instance after it is constructed or returned from a factory method. The container then 
+injects those dependencies when it creates the bean. This process is fundamentally the inverse, hence the name Inversion of Control
+(IoC), of the bean itself controlling the instantiation or location of its dependencies by using direct construction of classes, 
+or a mechanism such as the Service Locator pattern.) which are a BeanFactory Container and ApplicationContext Container in Spring 
+Framework:-
 
 - Spring BeanFactory Container is the simplest container which provides basic support for DI. It is defined by org.springframework
 .beans.factory.BeanFactory interface. A BeanFactory is essentially nothing more than the interface for an advanced factory capable 
@@ -235,6 +280,7 @@ you to update the implementation class whenever you want without need of changin
 name in your main method when running application and giving name of config file.
 
 	@Configuration
+	@ComponentScan("com.packageRoot")
 	public class AppConfig {
 		@Bean(name = "serviceClass")
 		public MyServiceInterface getServiceClassBean() {
@@ -243,14 +289,16 @@ name in your main method when running application and giving name of config file
 	}
 
 7. Any bean has 5 scopes as described below :-
-	- Singleton - Single instance per Spring container and is the default bean scope. Below is an code snippet.
+	- Singleton - Single instance per Spring container and is the default bean scope. Bean is created before code asks for it.
+				  Below is an code snippet.
 	@Service
 	@Scope("singleton")
 	public class CurrentClass() {
 		//functions
 	}
 
-	- Prototype - This scopes a single bean definition to have any number of object instances. Below is an code snippet.
+	- Prototype - This scopes a single bean definition to have any number of object instances. Bean is created after code asks for it.
+	 			  Below is an code snippet.
 	@Service
 	@Scope("prototype")
 	public class CurrentClass() {
@@ -260,23 +308,35 @@ name in your main method when running application and giving name of config file
 	** As a rule, use the prototype scope for all state-full beans and the singleton scope for stateless beans.**
 
 	For web projects
-	- Request - This scopes a bean definition to an HTTP requestt; that is each and every HTTP request will have its own 
+	- Request - This scopes a bean definition to an HTTP reques  t; that is each and every HTTP request will have its own 
 	instance of a bean created off the back of a single bean definition.
 	- Session - This scopes a bean definition to an HTTP session.
 	- Global  - This scopes a bean definition to a global HTTP session
 
 
 
-==================================================SPRING MVC FRAMEWORK=============================================================
+==================================================SPRING MVC FRAMEWORK(SOC)=============================================================
 
 1. Common Vocabulary :-
-	- Dispatcher Servlet - The entry / configuration point of application
+	- Dispatcher Servlet - The entry / configuration point of application. Front controller class maintained by Spring MVC.
+							Uses @Controller annotation to identify all controller classes.
 	- Handles the request and determines which view to route to.
 	- Request Mapping - The URL and the HTTP method type the function is bind to.
 	- View Resolver - Used to locate JSP pages
 	- Servlet - config - configuration file per Dispatcher Servlet
 	- POJO - Plain Old Java Object, which has no arg constructor and has private fields with associated getter/setter methods.
 	- Bean - It is a POJO that is configured by Spring to be used within the application.
+	- Common Annotations: 
+		@Controller
+		@RequestMapping
+		@PathVariable
+		@RequestParam
+		@ModelAttribute
+		@RequestBody and @ResponseBody:
+						EX:	public @ResponseBody List<User> listAllUsers(@RequestBody UserList users) {
+								return userService.findAllUsers();
+							}
+		@RequestHeader and @ResponseHeader
 
 2. Basic Components of Spring MVC project :-
 	- web.xml
@@ -376,6 +436,73 @@ of what we can to test. The below code snippet demos that approach :-
 
 
 ==========================================================Lambda Expressions======================================================
+ABOUT:
+	1. Passing function as method reference(EX: System.out::println) or (parameters -> Function body(Single line or multiple lines 
+		function body contained inside {} and separated by ;))
+
+	2. Lambdas can only be defined for functional interfaces that are interfaces with exactly one abstract method.
+
+	3. The declaration for filter looks like: Stream<T> filter(Predicate<? super T> predicate);
+
+	4. A predicate function can be defined as: 
+			public static Predicate<Employee> isAdultMale() 
+			{
+				return p -> p.getAge() > 21 && p.getGender().equalsIgnoreCase("M");
+			}
+
+	5. Optional is a container object used to contain not-null objects. Optional object is used to represent null with absent value,
+		which helps in avoiding null pointer checks.
+	
+	6. Example of important methods:
+				import java.util.Arrays;
+				import java.util.List;
+				import java.util.Optional;
+
+				class java_rough {
+					public static void main(String[] args) {
+						Optional<String> s1 = Optional.empty();
+						Optional<String> s2 = Optional.of("value");
+						Optional<String> s3 = Optional.ofNullable("value_1");
+						Optional<String> s4 = Optional.ofNullable(null);
+						Optional<List<String>> s5 = Optional.of(Arrays.asList(new String[]{"hi", "there"}));
+
+						if(s1.isPresent()) {
+							System.out.println(s1.get());
+						} else {
+							System.out.println(s1);
+						}
+
+						if(s2.isPresent()) {
+							System.out.println(s2.get());
+						} else {
+							System.out.println(s2);
+						}
+
+						if(s3.isPresent()) {
+							System.out.println(s3.get());
+						} else {
+							System.out.println(s3);
+						}
+
+						if(s4.isPresent()) {
+							System.out.println(s4.get());
+						} else {
+							System.out.println(s4);
+						}
+
+						if(s5.isPresent()) {
+							System.out.println(s5.get());
+						} else {
+							System.out.println(s5);
+						}
+					}
+				}
+
+		O/P: 	Optional.empty
+				value
+				value_1
+				Optional.empty
+				[hi, there]
 
 1. Common methods for Iterable and Collection interfaces :-
 	- 	List<Person> person = ...;
@@ -440,7 +567,9 @@ of what we can to test. The below code snippet demos that approach :-
 						})
 	);
 
-4. When you create a stream, it is always a serial stream unless otherwise specified. To create a parallel stream, invoke the operation Collection.parallelStream. Alternatively, invoke the operation BaseStream.parallel. For example, the following statement calculates the average age of all male members in parallel:
+4. When you create a stream, it is always a serial stream unless otherwise specified. To create a parallel stream, invoke the 
+operation Collection.parallelStream. Alternatively, invoke the operation BaseStream.parallel. For example, the following statement 
+calculates the average age of all male members in parallel:
 
 	double average = roster
 		.parallelStream()
@@ -505,3 +634,365 @@ reducing the memory and processing overhead.
 	excludeFilters = {Classes you want to exclude}
 )
 4. 
+
+====================================================FILE-HANDLING==================================================================
+1. java.io package contains all classes related to getting value in and from a variable.Java I/O is organized into 4 base classes:
+	- Reader(read from file) and Writer(write to a file)
+	- i/p (read as binary) and o/p (write as a binary)stream
+	- Utility classes: File and Path
+
+2. File file = new File("dummyFile.txt"); //does not create file in disk just a file object
+	Common methods for File class are:-
+		file.isDirectory();
+		file.isFile();
+		file.exists();
+		file.canRead();
+		file.canWrite();
+		file.canExecute();
+		file.createNewFile();
+    	file.mkdir();
+    	file.delete();
+		file.getName(); //file name
+    	file.getParent(); //path where file is
+		file.getPath(); //complete path with file name
+		file.getAbsolutePath();
+		file.getCanonicalPath(); //unique for each file
+
+3. Path interface also has above mentioned methods with new addition like:
+	- path.normalize(): Return value: This method returns the resulting path or this path if it does not 
+		contain redundant name elements; an empty path is returned if this path does not have a root 
+		component and all name elements are redundant.
+	- path.toRealPath()
+	- Files.isSameFile(path1, path2): Checks if both paths point to same location.
+	- path.get(""): Converts string into path instance.
+
+4. Java.io.Reader class in Java is an abstract class for reading character streams. The only methods 
+   that a subclass must implement are read(char[], int, int) and close().
+   public static void main(String[] args) throws Exception{
+    Reader reader = new FileReader("./dummy.txt");
+    char[] buffer = new char[10];
+    if(reader.ready()) {
+      reader.read(buffer, 0, 10);
+      System.out.println(Arrays.toString(buffer));
+    }
+    reader.close();
+  }
+}
+
+5. The reset() method of Reader Class in Java is used to reset the stream. After reset, if the stream 
+has been marked, then this method attempts to reposition it at the mark, else it will try to position 
+it to the starting.
+
+	class GFG { 
+    public static void main(String[] args) 
+    { 
+		try { 
+            String str = "GeeksForGeeks"; 
+            Reader reader = new StringReader(str); 
+            int ch; 
+            for (int i = 0; i < 10; i++) { 
+                ch = reader.read(); 
+                System.out.print((char)ch); 
+            } 
+            System.out.println(); 
+            reader.mark(5); 
+            reader.reset(); 
+            for (int i = 0; i < 5; i++) { 
+                ch = reader.read(); 
+				reader.skip(1); //Skip one character every time
+                System.out.print((char)ch); 
+            } 
+        }
+6. Sample program for creating files dynamically according to file size:
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
+
+class java_rough {
+  public static void main(String[] args) throws Exception{
+   File file = new File("./dummy.txt");
+
+   if(!file.exists()) {
+    file.createNewFile();
+    System.out.println("Created " + file.getName());
+   }
+
+    int count = 0;
+    long size = 0l;
+    String fileName;
+    CharSequence fileContent = "Sample data to be written";
+    Writer  writer = new FileWriter(file);
+    
+    while(count < 10) {
+      size = file.length();
+      if(size > 10) {
+        count++;
+        fileName = "dummy" + count;
+        file = new File("./" + fileName + ".txt");
+        file.createNewFile();
+        writer = new FileWriter(file);
+        System.out.println("Created new file" + fileName + ".txt" + " as size is " + size);
+        size = 0;
+      } else {
+        writer.append(fileContent);
+        writer.flush();
+      }
+    }
+    writer.close();
+  }
+}
+
+7. The Properties class represents a persistent set of properties. The Properties can be saved to a stream or loaded from a stream.
+
+	- Properties is a subclass of Hashtable.
+	- It is used to maintain list of value in which the key is a string and the value is also a string.
+	- One useful capability of the Properties class is that you can specify a default property that will be returned if no value is 
+	  associated with a certain key.
+	- Multiple thread can share a single properties object without the need of external synchronisation.
+
+8. EX: Setting/Retrieving properties
+		import java.util.Properties;
+		class java_rough {
+			public static void main(String[] args) {
+				Properties properties = new Properties();
+				properties.setProperty("name", "vishal");
+				properties.setProperty("age", "24");
+
+				System.out.println("details are: " + properties.getProperty("name") 
+												+ ", " + properties.getProperty("age") 
+												+ ", " + properties.getProperty("job", "Engineer"));
+			}
+		}
+		
+9. EX: Stroing properties in file
+				public static void main(String[] args) throws Exception {
+						Properties properties = new Properties();
+						properties.setProperty("name", "vishal");
+						properties.setProperty("age", "24");
+						//Paths creates files automatically 
+						try(Writer writer = Files.newBufferedWriter(Paths.get("./newProperties.txt"))) { 
+							properties.store(writer, "My details");
+						}
+
+						System.out.println("details are: " + properties.getProperty("name") 
+														+ ", " + properties.getProperty("age") 
+														+ ", " + properties.getProperty("job", "Engineer"));
+					}
+
+	File created : 	#My details
+					#Sun Jan 26 10:09:48 IST 2020
+					name=vishal
+					age=24
+
+4. EX: Reading from a file 
+					public static void main(String[] args) throws Exception {
+							Properties properties = new Properties();
+							try(Reader reader = Files.newBufferedReader(Paths.get("./newProperties.txt"))) {
+								properties.load(reader);
+							}
+
+							System.out.println("details are: " + properties.getProperty("name") 
+															+ ", " + properties.getProperty("age") 
+															+ ", " + properties.getProperty("job", "Engineer"));
+					}
+
+====================================================MULTI-THREADDING==================================================================
+
+1. Runnable Interface: Enables a classes method to run as thread in calling method
+					   EX: 	public class ExampleClass implements Runnable {  
+						
+							@Override  
+							public void run() {  
+								System.out.println("Thread has ended");  
+							}  
+						
+							public static void main(String[] args) {  
+								ExampleClass ex = new ExampleClass();  
+								Thread t1= new Thread(ex);  
+								t1.start();  
+								System.out.println("Hi");  
+							}  
+						}  
+
+2. Callable: The Callable interface is designed to define a task that returns a result and may throw an exception. This interface 
+	also contains a single, no-argument method, called call (), to be overridden by the implementors of this interface. This method 
+	is similar to the run () method of the Runnable interface, except that it returns a value and can throw a checked exception.
+
+3. Future: The Future interface is a generic interface that represents the value returned from an asynchronous computation. 
+   It contains methods to check if the computation has been completed or wait for it, retrieve the result.
+
+4. A java.util.concurrent.ExecutorService interface is a subinterface of Executor interface, and adds features to manage 
+   the lifecycle, both of the individual tasks and of the executor itself.
+EX:  
+			public class CallableMain {
+			public static void main(String[] args)
+					throws InterruptedException, ExecutionException {
+				ExecutorService service = Executors.newSingleThreadExecutor();
+				CallableFactorialTask task = new CallableFactorialTask(5);
+				Future<Integer> f = service.submit(task);
+				Integer val = f.get();
+				System.out.println(val);
+				service.shutdown();
+			}
+			}
+			class CallableFactorialTask implements Callable<Integer> {
+			private int num = 0;
+			public CallableFactorialTask(int num){
+				this.num = num;
+			}
+			@Override
+			public Integer call() throws Exception {
+				int prod = 1;
+				for (int i = 2; i <= num; i++)
+					prod *= i;
+				return prod;
+			}
+			}
+
+5. Synchronized Method: If you declare any method as synchronized (synchronized void printTable(int n)), it is known as synchronized method. Synchronized method is used to 
+   lock an object for any shared resource. When a thread invokes a synchronized method, it automatically acquires the lock for that 
+   object and releases it when the thread completes its task.
+
+6. Synchronized statements: Synchronized block is used to lock an object for any shared resource. Scope of synchronized block is 
+   smaller than the method.
+	EX:
+			void printTable(int n){  
+			synchronized(this){//synchronized block  
+				for(int i=1;i<=5;i++){  
+				System.out.println(n*i);  
+				try{  
+				Thread.sleep(400);  
+				}catch(Exception e){System.out.println(e);}  
+				}  
+			}  
+			}//end of the method  
+
+====================================================SQL AND NO-SQL==================================================================			
+
+1. Analogies MySQL and Mongo
+	Table : Collection
+	Primary Key : _id field
+	Tuple : BSON Document
+	Column : Field
+	Join : Embedding and Linking
+
+2. Differences MySQL and Mongo
+	Uses Schema : Schema Less
+	Relies on relations : Does no rely on relations
+	Stores data in multiple related tables : Stores data in a merged/consolidated manner as BSON Document
+	Horizontal scaling is difficult : Horizontal scaling is easy
+	Limitations for large number read and write queries per second :  Good performance for large number read and write queries per second
+
+3. Adding mongo db to SpringBoot App: https://springframework.guru/configuring-spring-boot-for-mongo/
+
+4. https://www.javaworld.com/article/3373652/java-persistence-with-jpa-and-hibernate-part-1-entities-and-relationships.html
+   JPA: Java Persistence API Hibernate is one implementation of JPA. Hibernate is an object-relational mapping (ORM) tool. JPA offers a 
+   standard way to annotate objects so that they can be mapped and stored in a relational database. 
+
+5. The Java Persistence API is a specification, not an implementation: it defines a common abstraction that you can use in your code to 
+   interact with ORM products. 
+
+6. The @Entity annotation is a marker annotation, which is used to discover persistent entities. If you wanted to map this entity to 
+   another table (and, optionally, a specific schema) you could use the @Table annotation to do that. able Schema is a specification 
+   for providing a “schema” (similar to a database schema) for tabular data. This information includes the expected type of each 
+   value in a column (“string”, “number”, “date”, etc.), constraints on the value and the expected format of the data
+	EX: @Entity
+		@Table(name="BOOKS", schema="PUBLISHING")
+		public class Book {
+		...
+		}
+	
+7. Fields are mapped to columns of the table. To override the column value use @Column annotation.
+		EX: @Entity
+			@Table(name="BOOKS")
+			public class Book {
+			private String name;
+			@Column(name="ISBN_NUMBER")
+			private String isbn;
+			...
+			}
+
+8.  In JPA, we use the @Id annotation to designate a field to be the table's primary key. The primary key is required to be a 
+	Java primitive type, a primitive wrapper, such as Integer or Long, a String, a Date, a BigInteger, or a BigDecimal.
+		EX: @Entity
+			@Table(name="BOOKS")
+			public class Book {
+			@Id
+			private Integer id;
+			private String name;
+			@Column(name="ISBN_NUMBER")
+			private String isbn;
+			...
+			}
+
+9. Annotations for mapping for Entity relations:
+	@OneToOne: @Entity
+				public class User {
+				@Id
+				private Integer id;
+				private String email;
+				private String name;
+				private String password;
+				@OneToOne(mappedBy="user")
+				private UserProfile profile;
+				...
+				}
+		Mapped to
+				@Entity
+				public class UserProfile {
+				@Id
+				private Integer id;
+				private int age;
+				private String gender;
+				private String favoriteColor;
+				@OneToOne
+				private User user;
+				...
+				}
+
+	@ManyToOne: @Entity
+				public class Book {
+					@Id
+					private Integer id;
+					private String name;
+					@ManyToOne
+					@JoinColumn(name="AUTHOR_ID")
+					private Author author;
+					...
+				}
+		Author can have multiple books but book has one Author scenario
+				@Entity
+				public class Author {
+					@Id
+					@GeneratedValue
+					private Integer id;
+					private String name;
+					@OneToMany(mappedBy = "author")
+					private List<Book> books = new ArrayList<>();
+					...
+				}
+
+	@ManyToMany:@Entity
+				public class Book {
+					@Id
+					private Integer id;
+					private String name;
+					@ManyToMany
+					@JoinTable(name="BOOK_AUTHORS",
+							joinColumns=@JoinColumn(name="BOOK_ID"),
+							inverseJoinColumns=@JoinColumn(name="AUTHOR_ID"))
+					private Set<Author> authors = new HashSet<>();
+					...
+				}
+		Author can have multiple books and book can have multiple Authors scenario
+				@Entity
+				public class Author {
+					@Id
+					@GeneratedValue
+					private Integer id;
+					private String name;
+					@ManyToMany(mappedBy = "author")
+					private Set<Book> books = new HashSet<>();
+					...
+				}
