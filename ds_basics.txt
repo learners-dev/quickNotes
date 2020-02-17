@@ -3933,6 +3933,144 @@ class java_rough {
       }
     }
 }
+
+100. Create a string from given String with only 2 alternating characters 
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+class java_rough {
+    static HashSet<Character> getSameAdjacent(String sample) {
+        HashSet<Character> dontInclude = new HashSet<>();
+        for(int i = 0; i < sample.length() - 1; i++) {
+            if(sample.charAt(i) == sample.charAt(i+1)) {
+                dontInclude.add(sample.charAt(i));
+                i++;
+            }
+        }
+        return dontInclude;
+    }
+
+    static boolean sameAdjacent(String sample) {
+        for(int i = 0; i < sample.length() - 1; i++) {
+            if(sample.charAt(i) == sample.charAt(i+1)) {
+               return false;
+            }
+        }
+        return true;
+    }
+
+    static String createString(char a, char b, String sample) {
+        List<Character> output = new ArrayList<>();
+        for(int i = 0; i < sample.length(); i++) {
+            if(sample.charAt(i) == a || sample.charAt(i) == b) {
+                output.add(sample.charAt(i));
+            }
+        }
+
+        StringBuilder outputString = new StringBuilder();
+        for(Character c : output) {
+            outputString.append(c);
+        }
+            if(sameAdjacent(String.valueOf(outputString))) {
+                return String.valueOf(outputString);
+            } else {
+                return "";
+            }
+    }
+    public static void main(String[] args) {
+        String sample = "bbbbbaaaaa";
+        int max = 0;
+        String temp = "";
+        String outPut = "";
+        HashSet<Character> adjacentCharacters = getSameAdjacent(sample);
+        List<Character>  nonAdjacentCharacter = new ArrayList<>();
+        for(int i = 0; i < sample.length(); i++) {
+            if(!adjacentCharacters.contains(sample.charAt(i))) {
+                adjacentCharacters.add(sample.charAt(i));
+                nonAdjacentCharacter.add(sample.charAt(i));
+            }
+        }
+        for(int i = 0; i < nonAdjacentCharacter.size() - 1; i++) {
+            for(int j = i + 1; j < nonAdjacentCharacter.size(); j++) {
+                temp = createString(nonAdjacentCharacter.get(i), nonAdjacentCharacter.get(j), sample);
+                if(max < temp.length()) {
+                    max = temp.length();
+                    outPut = temp;
+                }
+
+            }
+        }
+
+        System.out.println(outPut);
+
+    }
+}
+
+101. Map implementation in Java:
+
+import java.util.Scanner;
+
+class java_rough {
+    public static class Entry<K, V> {
+        final K key;
+        V value;
+        Entry<K, V> next;
+
+        public Entry(K key, V value, Entry<K, V> next) {
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
+    }
+
+    public static void main(String[] args) {
+        int intialSize = 4;
+        @SuppressWarnings("unchecked")
+        Entry<String, String>[] map = new Entry[intialSize];
+        Scanner scan = new Scanner(System.in);
+        String key;
+        String value;
+        int tempIndex;
+        Entry<String, String> dummyNodeEntry;
+        for(int i = 0; i < intialSize; i++) {
+            key = scan.nextLine();
+            value = scan.nextLine();
+            tempIndex = key.hashCode() % intialSize;
+            System.out.println(key + ", " + value + ", " + tempIndex);
+            if(map[tempIndex] == null) {
+                map[tempIndex] = new Entry<String, String>(key, value, null);
+            } else if(map[tempIndex].key.equals(key)) {
+                System.out.println("key Alredy exists");
+            } else {
+                map[tempIndex].next = new Entry<String, String>(key, value, null);
+            }
+        }
+
+        System.out.println("Retrieval begins");
+
+        for(int i = 0; i < intialSize; i++) {
+            key = scan.nextLine();
+            tempIndex = key.hashCode() % intialSize;
+            if(map[tempIndex].key.equals(key)) {
+                System.out.println("for " + key + " value is " + map[tempIndex].value);
+            } else {
+                dummyNodeEntry = map[tempIndex].next;
+                while(dummyNodeEntry != null) {
+                    System.out.println("dummyNode " + dummyNodeEntry.key + ", " + dummyNodeEntry.value);
+                    if(dummyNodeEntry.key.equals(key)) {
+                        System.out.println(map[tempIndex].value);
+                        break;
+                    } else {
+                        dummyNodeEntry = dummyNodeEntry.next;
+                    }
+                }
+            }
+        }
+        scan.close();
+    }
+}
 //https://www.geeksforgeeks.org/find-whether-subarray-form-mountain-not/
 //Ensuring Thread Safety for singleton class
 //e15844676c314f9b050bf5201f992d9fa57c155d488c19a233cccbdb135911d6

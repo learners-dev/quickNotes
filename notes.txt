@@ -25,6 +25,61 @@
 	5. Realization: The relationship between the interface and the implementing class.
 
 5. B-trees are used to manage indexes in DBMS.
+
+6. AOP or Aspect Oriented programming is setting tasks as aspects and instead of calling them specifically in you function configuring
+   them to rum before/after a task Execution.
+
+7. Functional interface: A functional interface is an interface that contains only one abstract method. Comparator is a functional 
+   interface because there's only one unimplemented abstract method: compare(T o1, T o2). 
+   EX: Implementing the compare method:
+		personList.sort(new Comparator<Employee>() {
+
+        @Override
+        public int compare(Employee e1, Employee e2) {
+            return e1.getName().compareTo(e2.getName());
+        });
+
+8. Using lambda expression the declaration can be implified to: personList.sort(Comparator.comparing((Person p) -> p.name));
+
+9. The main class for a Simple springboot application 
+
+		@SpringBootApplication
+		public class Application {
+
+			public static void main(String[] args) {
+				SpringApplication.run(Application.class, args);
+			}
+
+		}
+
+10. The@ControllerAdvice annotation allows us to consolidate our multiple, scattered @ExceptionHandlers from before into 
+    a single, global error handling component.
+
+11. LocalDate myObj = LocalDate.now(); // Create a date object
+
+12. Overriding equals and hasCode function in java class
+			class java_rough {
+				int age;
+				String name;
+				@Override
+				public boolean equals(Object obj) {
+					if(this == obj) {
+						return true;
+					}
+					if(this == null || obj == null) {
+						return false;
+					}
+					java_rough newObj = (java_rough) obj;
+					return this.age == newObj.age && this.name.equals(newObj.name);
+				}
+
+				@Override
+				public int hashCode() {
+					int result = 0;
+					result = (int) (value / 11);
+					return result;
+				}
+			}
 ========================================== JAX-RS ===============================================================
 1. REST services borrow the below mentioned mechanisms from HTTP :-
     -   Resource based URL's
@@ -416,6 +471,7 @@ public String updateGoal(@Valid @ModelAttribute("goal")Goal goal, BindingResult 
 	- You can also use times, atleast(n), atleastOnce(), atmost(n), never
 
 7. Argument matching while mocking functions uses common Matcher classes below functions :-
+ EX: when(mockFoo.bool(anyString(), anyInt(), any(Object.class))).thenReturn(true);
 	- Matchers.eq() -> Used for equals as you have to use implicit or explicit matching only for all fields.
 	- (data_type) Matchers.any()
 	- Matchers.anyInt() and other generic datatypes
@@ -426,6 +482,11 @@ public String updateGoal(@Valid @ModelAttribute("goal")Goal goal, BindingResult 
 	- InOrder inOrderVerifier = Mockito.inOrder(mockService1, mockService2);
 		 inOrderVerifier.verify(mockService1).function1();
 		 inOrderVerifier.verify(mockService2).function2();
+	-  When return for same function needs to be different
+		when(mockFoo.someMethod())
+            .thenReturn(0)
+            .thenReturn(1)
+            .thenReturn(-1); //any subsequent call will return -1
 
 9. Mockito provides a utility to capture arguments tha are being passed to functiona calls to improve the scope 
 of what we can to test. The below code snippet demos that approach :-
@@ -996,3 +1057,134 @@ EX:
 					private Set<Book> books = new HashSet<>();
 					...
 				}
+
+==================================================GIT-COMMANDS===================================================================
+
+1. 	Running the following command will revert the last two commits: git revert HEAD~2..HEAD
+	Alternatively, one can always checkout the state of a particular commit from the past, and commit it anew.
+
+2.	To squash the last N commits of the current branch, run the following command (with {N} replaced with the number of commits 
+	that you want to squash):	git rebase -i HEAD~{N}
+	Upon running this command, an editor will open with a list of these N commit messages, one per line. Each of these lines will 
+	begin with the word “pick”. Replacing “pick” with “squash” or “s” will tell Git to combine the commit with the commit before it. 
+	To combine all N commits into one, set every commit in the list to be squash except the first one. Upon exiting the editor, and 
+	if no conflict arises, git rebase will allow you to create a new commit message for the new combined commit.
+
+3. 	git diff-tree -r {hash}:	Given the commit hash, this will list all the files that were changed or added in that commit. 
+	The -r flag makes the command list individual files, rather than collapsing them into root directory names only.
+
+4.	git cherry-pick {hash of that commit}:	In spite of applying the same changes, it will be a new commit with a new hash 
+	because the changes are applied to a different destination.
+
+5. 	git fetch only downloads new data from a remote repository, but it doesn’t integrate any of the downloaded data into your 
+	working files. All it does is provide a view of this data.
+
+6.	git pull downloads as well as merges the data from a remote repository into your local working files. It may also lead to 
+	merge conflicts if your local changes are not yet committed. Use the git stash command to hide your local changes.
+
+===============================================================DOCKER COMMANDS====================================================
+COMMON:	docker ps, docker ps -a, docker stop, docker images, docker rm <container id>, docker rmi <image-id>
+1.	docker run -it -d <image name>: This command is used to create a container from an image
+
+2. 	Usage: docker exec -it <container id> bash: This command is used to access the running container
+
+3.	docker kill <container id>: The difference between ‘docker kill’ and ‘docker stop’ is that ‘docker stop’ gives the container 
+	time to shutdown gracefully, in situations when it is taking too much time for getting the container to stop, one can opt to 
+	kill it
+
+4.	docker commit <conatainer id> <username/imagename>: This command creates a new image of an edited container on the local system
+
+5.	docker push <username/image name>: This command is used to push an image to the docker hub repository
+
+6.	docker build <path to docker file>: This command is used to build an image from a specified docker file
+
+================================================================KAFKA================================================================
+
+1. 	Topics in Kafka are data streams, identified by Topic-name. Each topic has partitions and messages are devided in these 
+	partitions for a topic. Topics stored data in ordered manner by using a increasing Offset value for each message.
+
+2. 	Data is randomly assigned among partitions in for a topic, until a key is used. Data order is only guarenteed for a partition
+	using offsets. Data once written on a partition cannot be changes ie it is immutable.
+
+3.	Kafka broker is the server that stores partitions of kafka topics. A collection of brokers is called a kafka cluster and 
+	once connecting to a bootstrap broker which can be any one of the cluster, connection will be made for the while cluster.
+	Each broker is identified by its ID (integer).
+
+4. 	At a time only one broker is leader for a partition. The same broker will not contain its In Sync Replica(ISR) so that if it 
+	goes down the broker with ISR becomes leader.
+
+5. 	Producer can opt for ACKS in the following 3 ways:
+	-	acks = 0: No acks waiting done by producer.
+	-	acks = 1: Producer waits for leader acks.
+	-	acks = all: Producer waits for leader and replicas acks.
+
+6. 	Producer can use keys + Message to ensure partition to which the message is sent, else it is sent using Round Robin.
+
+7. 	Consumers read as groups, where each consumer is reading from fixed partition. If your config has more consumer in group than
+	partition from the topic then one group will be left idle.
+
+8. 	Consumers have 3 delivery semantics for commiting offsets:
+	-	At most once: 	commiting offset as soon as message is received. Message will be lost if processing fails.
+	-	At least once: 	commiting offset after processing message. Message is reprocessed if processing fails, so system should be 
+						Idempotent.
+	-	Exactly once:	Is achieved using kafka stream APIs
+9. 	Github: https://github.com/simplesteph/kafka-beginners-course/tree/master/kafka-basics/src/main/java/kafka/tutorial1
+
+10. Using below method you can add Kafka metadata for your logging:
+				producer.send(record, new Callback() {  //A callback interface that the user can implement to allow code to
+														// execute when the request is complete.
+					public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+						// executes every time a record is successfully sent or an exception is thrown
+						if (e == null) {
+							// the record was successfully sent
+							logger.info("Received new metadata. \n" +
+									"Topic:" + recordMetadata.topic() + "\n" +
+									"Partition: " + recordMetadata.partition() + "\n" +
+									"Offset: " + recordMetadata.offset() + "\n" +
+									"Timestamp: " + recordMetadata.timestamp());
+						} else {
+							logger.error("Error while producing", e);
+						}
+                }
+
+11.	You can add key to your kafka message by: 
+				ProducerRecord<String, String> record =	new ProducerRecord<String, String>(topic, key, value);
+Then sending this record as shown above.
+
+12. After setting Consumer properties you can set consumer to subscribe to topic and log the messages and metadata with it as
+	shown below:
+
+	KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+
+        // subscribe consumer to our topic(s)
+        consumer.subscribe(Arrays.asList(topic));
+
+        // poll for new data
+        while(true){
+            ConsumerRecords<String, String> records =
+                    consumer.poll(Duration.ofMillis(100)); // new in Kafka 2.0.0
+
+            for (ConsumerRecord<String, String> record : records){
+                logger.info("Key: " + record.key() + ", Value: " + record.value());
+                logger.info("Partition: " + record.partition() + ", Offset:" + record.offset());
+            }
+        }
+
+13. Kafka allows you to Assign a topic and partition and seek messages for it from a particular offset.
+EX: https://github.com/simplesteph/kafka-beginners-course/blob/master/kafka-basics/src/main/java/kafka/tutorial1/ConsumerDemoAssignSeek.java 
+
+OPEN QUESTIONS:
+1. Can a consumer be coded to read from a paeticular partition?
+2. ACKS stratergy, comiting offsets, using callback, keys, Assign and Seek
+
+	
+
+
+
+
+
+
+
+
+
+
