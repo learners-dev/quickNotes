@@ -27,7 +27,7 @@
 5. B-trees are used to manage indexes in DBMS.
 
 6. AOP or Aspect Oriented programming is setting tasks as aspects and instead of calling them specifically in you function configuring
-   them to rum before/after a task Execution.
+   them to run before/after a task Execution across classes in application.
 
 7. Functional interface: A functional interface is an interface that contains only one abstract method. Comparator is a functional 
    interface because there's only one unimplemented abstract method: compare(T o1, T o2). 
@@ -80,6 +80,19 @@
 					return result;
 				}
 			}
+
+13. Types of Memories in C:
+	-	Code: Code/instructions are stored here
+	-	Static: Stores Global/Static variables
+	-	Stack: Stores function context(address space, stack space, virtual address space, register set image (e.g. Program Counter
+			   (PC), Stack Pointer (SP), Instruction Register (IR), Program Status Word (PSW) and other general processor registers)
+	-	Heap: Dynamic memory allocation is done from this memory segment(malloc)
+
+
+Input/Output streams, Java Multithreading, Serialization in JSON, RMI, HttpUrlConnection, socket
+
+===================================================================JAVA-INTERVIEW==================================================================
+1.	Static vs Non-Static: Bonded during compile time vs runtime
 ========================================== JAX-RS ===============================================================
 1. REST services borrow the below mentioned mechanisms from HTTP :-
     -   Resource based URL's
@@ -498,7 +511,14 @@ of what we can to test. The below code snippet demos that approach :-
 
 ==========================================================Lambda Expressions======================================================
 ABOUT:
-	1. Passing function as method reference(EX: System.out::println) or (parameters -> Function body(Single line or multiple lines 
+	1. Advantages of using Lambdas include:
+		Conciseness
+		Reduction in code bloat
+		Readability 
+		Code reuse
+		Parallel processing opportunities
+	
+	Passing function as method reference(EX: System.out::println) or (parameters -> Function body(Single line or multiple lines 
 		function body contained inside {} and separated by ;))
 
 	2. Lambdas can only be defined for functional interfaces that are interfaces with exactly one abstract method.
@@ -513,6 +533,41 @@ ABOUT:
 
 	5. Optional is a container object used to contain not-null objects. Optional object is used to represent null with absent value,
 		which helps in avoiding null pointer checks.
+	EX: Optional use cases:
+		-	Use Optional only as return type.
+		-	Dog dog = fetchSomeVaraible();
+			String dogString = dogToString(dog);
+			public String dogToString(Dog dog){
+				if(dog == null){
+					return "DOG'd name is : " + dog.getName();
+				} else { 
+					return "CAT";
+				}
+			}
+
+			can become:
+
+			Optional<Dog> dog = fetchDogIfExists();
+			String dogsName = dog
+			.map(this::convertToDog)
+			.orElseGet(this::convertToCat)
+			public void convertToDog(Dog dog){
+				return "DOG'd name is : " + dog.getName();
+			}
+			public void convertToCat(){
+				return "CAT";
+			}
+		-	Dog dog = fetchDog();
+			if(optionalDog != null && optionalDog.isBigDog()){
+				doBlaBlaBla(optionalDog);
+			}
+
+			into this:
+
+			Optional<Dog> optionalDog = fetchOptionalDog();
+			optionalDog
+			.filter(Dog::isBigDog)
+			.ifPresent(this::doBlaBlaBla)
 	
 	6. Example of important methods:
 				import java.util.Arrays;
@@ -859,7 +914,7 @@ class java_rough {
 					}
 
 ====================================================MULTI-THREADDING==================================================================
-
+-	States for a thread are: Born/ New → Runnable → Running → Dead
 1. Runnable Interface: Enables a classes method to run as thread in calling method
 					   EX: 	public class ExampleClass implements Runnable {  
 						
@@ -1174,11 +1229,50 @@ Then sending this record as shown above.
 EX: https://github.com/simplesteph/kafka-beginners-course/blob/master/kafka-basics/src/main/java/kafka/tutorial1/ConsumerDemoAssignSeek.java 
 
 OPEN QUESTIONS:
-1. Can a consumer be coded to read from a paeticular partition?
+1. Can a consumer be coded to read from a particular partition?
 2. ACKS stratergy, comiting offsets, using callback, keys, Assign and Seek
 
-	
+================================================================OSI LAYERS================================================================
 
+1.	The structure of the Internet is modeled on the Open Systems Interconnection (OSI) model.
+
+2. 7 Layers are described below:
+
+	1. 	Physical(Bits, Media) : This layer includes the physical equipment involved in the data transfer, such as the cables and 
+		switches. This is also the layer where the data gets converted into a bit stream, which is a string of 1s and 0s. The 
+		physical layer of both devices must also agree on a signal convention so that the 1s can be distinguished from the 0s on 
+		both devices. 
+
+	2. 	Data Link(Frames, Media) : This layer facilitates data transfer between two devices on the SAME network. The data link layer 
+		takes packets from the network layer and breaks them into smaller pieces called frames. 
+
+	3. 	Network(Packates, Media) : This layer is responsible for facilitating data transfer between two different networks. The 
+		network layer breaks up segments from the transport layer into smaller units, called packets, on the sender’s device, and 
+		reassembling these packets on the receiving device. The network layer also finds the best physical path for the data to 
+		reach its destination; this is known as routing.
+
+	4. 	Transport(Segments, Host) : This layers takes data from the session layer and breaks it up into chunks called segments 
+		before sending it to layer 3. The transport layer on the receiving device is responsible for reassembling the segments into 
+		data the session layer can consume. The transport layer is also responsible for flow control and error control. Flow control 
+		determines an optimal speed of transmission to ensure that a sender with a fast connection doesn’t overwhelm a receiver with 
+		a slow connection. The transport layer performs error control on the receiving end by ensuring that the data received is 
+		complete, and requesting a retransmission if it isn’t.
+
+	5. 	Session(Data, Host) : This is the layer responsible for opening and closing communication between the two devices. The 
+		time between when the communication is opened and closed is known as the session. The session layer ensures that the 
+		session stays open long enough to transfer all the data being exchanged, and then promptly closes the session in order to 
+		avoid wasting resources. The session layer also synchronizes data transfer with checkpoints. For example, if a 100 megabyte 
+		file is being transferred, the session layer could set a checkpoint every 5 megabytes. In the case of a disconnect or a 
+		crash after 52 megabytes have been transferred, the session could be resumed from the last checkpoint, meaning only 50 more 
+		megabytes of data need to be transferred. Without the checkpoints, the entire transfer would have to begin again from scratch.
+	
+	6. 	Presentation(Data, Host) : This layer is primarily responsible for preparing data so that it can be used by the 
+		application layer; in other words, layer 6 makes the data presentable for applications to consume. The presentation layer 
+		is responsible for translation, encryption, and compression of data it receives from the application layer before delivering
+	 	it to layer 5.
+
+	7. 	Application(Data, Host) : This is the only layer that directly interacts with data from the user. Software applications like 
+		web browsers and email clients rely on the application layer to initiate communications.
 
 
 

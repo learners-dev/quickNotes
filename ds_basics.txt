@@ -1,4 +1,3 @@
-
 ***START WITH SORTING FIRST***
 
 1. Longest Common Subsequence
@@ -65,13 +64,13 @@ public static int sameString(char[] a, char b) {
 }
 }
 
-4. Subset Sum
+4. Subset Sum to return boolean if a subset exists with target value as its sum
 Solution:-
 import java.util.Arrays;
 public class java_rough {
     public static void main(String[] args) {
         int[] a = new int[4];
-        Arrays.fill(a, 1);
+        Arrays.fill(a, 1); //Fills array with a initial value
         for(int i = 0; i < a.length; i++) {
             System.out.println(a[i]);
         }
@@ -1726,7 +1725,7 @@ class java_rough {
 
 Best case solution will be using PnC ie
 
-(n + m - 2) / ((n - 1)! * (m - 1)!);
+(n + m - 2)! / ((n - 1)! * (m - 1)!);
 
 DP Solution: -
 class java_rough {
@@ -4071,6 +4070,159 @@ class java_rough {
         scan.close();
     }
 }
+
+102. Common REGEX patterns: https://mkyong.com/regular-expressions/10-java-regular-expression-examples-you-should-know/
+-   Username:   ^[a-z0-9_-]{3,15}$
+
+                ^                    # Start of the line
+                [a-z0-9_-]	     # Match characters and symbols in the list, a-z, 0-9 , underscore , hyphen
+                            {3,15}  # Length at least 3 characters and maximum length of 15 
+                $                    # End of the line
+
+-   Password:   ((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})
+
+                (			# Start of group
+                (?=.*\d)		#   must contains one digit from 0-9
+                (?=.*[a-z])		#   must contains one lowercase characters
+                (?=.*[A-Z])		#   must contains one uppercase characters
+                (?=.*[@#$%])		#   must contains one special symbols in the list "@#$%"
+                            .		#     match anything with previous condition checking
+                                {6,20}	#        length at least 6 characters and maximum of 20	
+                )	
+EX:     import java.util.regex.Pattern;
+
+        class java_rough {
+            public static void main(String[] args) {
+                String pattern = "((?=(.*\\d){2})(?=.*[a-z])(?=.*[A-Z]).{3,8})";
+                Pattern tester = Pattern.compile(pattern);
+                System.out.println(tester.matcher("1pLLut").matches());
+            }
+        }
+
+-   Email:  ^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+ (\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$
+
+                    ^			#start of the line
+                    [_A-Za-z0-9-]+	#  must start with string in the bracket [ ], must contains one or more (+)
+                    (			#  start of group #1
+                        \\.[_A-Za-z0-9-]+	#     follow by a dot "." and string in the bracket [ ], must contains one or more (+)
+                    )*			#  end of group #1, this group is optional (*)
+                        @			#     must contains a "@" symbol
+                        [A-Za-z0-9]+       #        follow by string in the bracket [ ], must contains one or more (+)
+                        (			#	   start of group #2 - first level TLD checking
+                        \\.[A-Za-z0-9]+  #	     follow by a dot "." and string in the bracket [ ], must contains one or more (+)
+                        )*		#	   end of group #2, this group is optional (*)
+                        (			#	   start of group #3 - second level TLD checking
+                        \\.[A-Za-z]{2,}  #	     follow by a dot "." and string in the bracket [ ], with minimum length of 2
+                        )			#	   end of group #3
+                    $			#end of the line
+
+-   Image:  ([^\s]+(\.(?i)(jpg|png|gif|bmp))$)
+
+            (			#Start of the group #1
+            [^\s]+			#  must contains one or more anything (except white space)
+                (		#    start of the group #2
+                    \.		#	follow by a dot "."
+                    (?i)		#	ignore the case sensitive checking
+                        (		#	  start of the group #3
+                        jpg	#	    contains characters "jpg"
+                        |		#	    ..or
+                        png	#	    contains characters "png"
+                        |		#	    ..or
+                        gif	#	    contains characters "gif"
+                        |		#	    ..or
+                        bmp	#	    contains characters "bmp"
+                        )		#	  end of the group #3
+                )		#     end of the group #2	
+            $			#  end of the string
+            )		
+
+
+103. Matrix chain multiplication recursive solution
+
+class java_rough {
+    
+    public static int matrixMultiplication(int[] matrixDimensions, int firstMatrix, int lastMatrix) {
+        if(firstMatrix == (lastMatrix - 2)) {
+            return (matrixDimensions[firstMatrix] * matrixDimensions[firstMatrix + 1] * matrixDimensions[lastMatrix]);
+        } else if (firstMatrix > (lastMatrix - 2)) {
+            return 0;
+        }
+        int count = 0;
+        int numberOfMultiplicationsRequired = Integer.MAX_VALUE;
+        for(int middleMatrix = firstMatrix + 1; middleMatrix < lastMatrix; middleMatrix++) {
+            count = matrixMultiplication(matrixDimensions, firstMatrix, middleMatrix) + 
+                    matrixMultiplication(matrixDimensions, middleMatrix, lastMatrix) + 
+                    matrixDimensions[firstMatrix]*matrixDimensions[lastMatrix]*matrixDimensions[middleMatrix];
+
+            System.out.println(count);
+            numberOfMultiplicationsRequired = Math.min(numberOfMultiplicationsRequired, count);
+        }
+        return numberOfMultiplicationsRequired;
+    }
+    
+    public static void main(String[] args) {
+        int[] matrixDimensions = new int[]{40, 20, 30, 10, 30};
+        //int[] matrixDimensions = new int[]{4, 3, 4, 5};
+        int firstMatrix, lastMatrix;
+        firstMatrix = 0;
+        lastMatrix = matrixDimensions.length - 1;
+        System.out.println("minimum multiplications required: " + matrixMultiplication( matrixDimensions, 
+                                                                                        firstMatrix, 
+                                                                                        lastMatrix));
+    }
+}
+
+104. Assembly Line Scheduling 
+
+class java_rough {
+
+    public static int carAssembly(int[][] station, int[][] transfer, int[] entry, int[] exit) {
+        int stationsPresent = station[0].length;
+        int[] beltA = new int[stationsPresent];
+        int[] beltB = new int[stationsPresent];
+        
+        beltA[0] = station[0][0] + entry[0];
+        beltB[0] = station[1][0] + entry[1];
+        int counter = 1;
+        while(counter < stationsPresent) {
+            beltA[counter] = Math.min(beltA[counter - 1] + station[0][counter], 
+                                        beltB[counter - 1] + transfer[1][counter] + station[0][counter]);
+                                        
+            beltB[counter] = Math.min(beltB[counter - 1] + station[1][counter], 
+                                        beltA[counter - 1] + transfer[0][counter] + station[1][counter]);
+
+            counter ++;
+        }
+        return Math.min(beltA[counter - 1] + exit[0], beltB[counter - 1] + exit[1]);
+    }
+    public static void main(String[] args) {
+        int station[][] = {{4, 5, 3, 2}, 
+                    {2, 10, 1, 4}}; 
+        int transfer[][] = {{0, 7, 4, 5}, 
+                    {0, 9, 2, 8}}; 
+        int entry[] = {10, 12};
+        int exit[] = {18, 7}; 
+      
+        System.out.println(carAssembly(station , transfer, entry, exit));
+    }
+}
+
+105. Finding only number repeated odd times
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] arrays = new int[]{2,6,4,3,3,6,2};
+        int xoredResult = 0;
+        for(int i : arrays) {
+            xoredResult = i^xoredResult;
+        }
+        System.out.println(xoredResult);
+    }
+}
+
+
+
+
 //https://www.geeksforgeeks.org/find-whether-subarray-form-mountain-not/
 //Ensuring Thread Safety for singleton class
 //e15844676c314f9b050bf5201f992d9fa57c155d488c19a233cccbdb135911d6
