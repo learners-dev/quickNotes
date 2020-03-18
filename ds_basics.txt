@@ -278,33 +278,123 @@ int isBst(struct node *root, int max, int min) {
 
 15. Deletion of node in BST.
 Solution:-
-struct node* deleteNode(struct node *root, int target) {
-    if(root == NULL) {
-        return root;
-    } else if(root -> data > target) {
-        root -> lc = deleteNode(root -> lc, target);
-    } else if(root -> data < target) {
-        root -> rc = deleteNode(root -> rc, target);
-    } else {
-        if(root -> lc == NULL && root -> rc == NULL) {
-            delete root; 
-            root = NULL;
-        } else if(root -> lc == NULL) {
-            struct node *temp = root
-            root = root -> rc;
-            delete(temp);
-        } else if(root -> rc == NULL) {
-            struct node *temp = root
-            root = root -> lc;
-            delete(temp);
-        } else {                            //Deleting inorder successor which is selected by convention
-            struct node *temp;
-            temp = findmin(root -> rc);
-            root -> data = temp -> data;
-            root -> rc = deleteNode(root -> rc, temp -> data); 
-            delete(temp);
+import java.util.LinkedList;
+import java.util.Queue;
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
         }
-        return root;
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static void lot(node root) {
+            Queue<node> queue = new LinkedList<>();
+            queue.add(root);
+            node temp;
+                while(!queue.isEmpty()) {
+                    temp = queue.poll();
+                    System.out.print(temp.value + ", ");
+                    if(temp.lc != null) {
+                        queue.add(temp.lc);
+                    }
+
+                    if(temp.rc != null) {
+                        queue.add(temp.rc);
+                    }
+                }
+                System.out.println("lot traversal");
+        }
+
+        public static node deleteNode(node root, int targetValue) {
+            node temp = find(root, targetValue);
+            if(temp == null) {
+                System.out.println("Value not present");
+                return root;
+            } else {
+                if(temp.rc == null && temp.lc == null) {
+                    System.out.println("node to be deleted has no children");
+                    temp = null;
+                } else if (temp.rc == null) {
+                    System.out.println("node to be deleted has one child, " + temp.lc.value);
+                    temp = temp.lc;
+                } else if(temp.lc == null) {
+                    System.out.println("node to be deleted has one child, " + temp.rc.value);
+                    temp = temp.rc;
+                } else {
+                    System.out.println("node to be deleted has both children, " + temp.lc.value + ", " + temp.rc.value);
+                    node temp2 = temp.rc;
+                    node parent = null;
+                    while(temp2.lc != null) {
+                        parent = temp2;
+                        temp2 = temp2.lc;
+                    }
+                    temp.value = temp2.value;
+                    if(parent != null) {
+                        parent.lc = temp2.rc;
+                    }
+                    System.out.println("inorder Successor, " + temp.value);
+                }
+                return root;
+            }
+        }
+
+        public static node find(node root, int targetValue) {
+            if(root == null) {
+                return root;
+            } else if(root.value == targetValue) {
+                System.out.println("found value, " + root.value);
+                return root;
+            } else {
+                System.out.println("reached node, " + root.value);
+                if(root.value < targetValue) {
+                    return find(root.rc, targetValue);
+                } else {
+                    return find(root.lc, targetValue);
+                }
+            }
+        }
+    }
+    public static void main(String[] args) {
+        node root = new node(10);
+        root.insert(root, 5);
+        root.insert(root, 15);
+        root.insert(root, 3);
+        root.insert(root, 9);
+        root.insert(root, 11);
+        root.insert(root, 20);
+        root.insert(root, 4);
+        root.insert(root, 7);
+        root.insert(root, 8);
+        root.insert(root, 12);
+        root.insert(root, 16);
+
+        node.lot(root);
+
+        root = node.deleteNode(root, 5);
+
+        node.lot(root);
     }
 }
 
@@ -4219,6 +4309,147 @@ class java_rough {
         System.out.println(xoredResult);
     }
 }
+
+106. Sorting array with only 3 values in O(n)
+
+class java_rough {
+    
+    public static void swap(int[] array, int first, int second) {
+        if(first == second) {
+            return;
+        } else {
+            int temp;
+            temp = array[first];
+            array[first] = array[second];
+            array[second] = temp;
+        }
+    }
+    
+    public static void main(String[] args) {
+        int[] only3Values = new int[]{2,1,1,0,2,1,2,0,0,2,0};
+        int first, current, last;
+        first = 0;
+        last = only3Values.length - 1;
+        current = 0;
+        while(current <= last) {
+            switch(only3Values[current]) {
+                case 0:
+                    swap(only3Values, first, current);
+                    first++;
+                    current++;
+                    break;
+
+                case 1:
+                    current++;
+                    break;
+
+                case 2: 
+                    swap(only3Values, last, current);
+                    last--;
+                    break;
+            }
+        }
+
+        for(int i : only3Values) {
+            System.out.print(i + ", ");
+        }
+    }
+}
+
+107. Power of number in log(power)
+
+class java_rough {
+    public static void main(String[] args) {
+        int number = 5;
+        int power = 10;
+
+        System.out.println(powerCalculate(number, power));
+    }
+
+    public static int powerCalculate(int number, int power) {
+        if(power == 1) {
+            return number;
+        } else if(power %2 == 0) {
+            return powerCalculate(number, power/2) * powerCalculate(number, power/2);
+        } else {
+            return number *powerCalculate(number, power - 1);
+        }
+    }
+}
+
+108. Finding prime number less than equal to upper limit: sieve-of-eratosthenes
+
+class java_rough {
+    public static void main(String[] args) {
+        int upperLimit = 53;
+        int[] recordPrimeNumbers = new int[upperLimit + 1];
+        int start;
+        for(int i = 2; i <= upperLimit; i++) {
+            if(recordPrimeNumbers[i] == 0) {
+                start = i;
+                for(int j = i*i; j <= upperLimit; j = i * start) {
+                    recordPrimeNumbers[j] = -1;
+                    start++;
+                }
+            }
+        }
+        for(int i = 2; i <= upperLimit; i++) {
+            if(recordPrimeNumbers[i] == 0) {
+                System.out.print(i + ", ");
+            }
+        }
+    }
+}
+
+109. Given an array of integer numbers, we need to find maximum size of a subset such that sum of each pair of this 
+     subset is not divisible by K.
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] numbers = new int[]{3, 17, 12, 9, 11, 15};
+        int divisor = 5;
+        int[] remainders = new int[divisor];
+        int result = 0;
+
+        for(int i = 0; i < numbers.length; i++) {
+            remainders[numbers[i] % divisor]++;
+        }
+
+        if(divisor % 2 ==0) {
+            remainders[divisor/2] = Math.min(1, remainders[divisor/2]);
+        }
+
+        result = Math.min(1, remainders[0]);
+
+        for(int i = 1; i <= divisor/2; i++) {
+            result = result + Math.max(remainders[i], remainders[divisor - i]);
+        }
+
+        System.out.println(result);
+
+    }
+}
+
+110. Tower of hanoi
+
+class java_rough {
+
+    public static void towerOfHanoi(int disks, char from, char to, char aux) {
+        if(disks == 1) {
+            System.out.println ("move from " + disks + ", " + from + " to " + to);
+            return;
+        }
+        towerOfHanoi(disks - 1, from, aux, to);
+        System.out.println ("move from " + disks + ", " + from + " to " + to);
+        towerOfHanoi(disks - 1, aux, to, from);
+    }
+    public static void main(String[] args) {
+    int disks = 3;
+    towerOfHanoi(disks, 'A', 'C','B');
+    }
+}
+
+
 
 
 

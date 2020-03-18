@@ -1,0 +1,427 @@
+1. Data types in js?
+-> Primitive -> {undefined, boolean, string, symbol, number} and Object. Also null is an object value which signifies no value, whereas undefined
+means no value is assigned yet.
+
+2. Is js case sensitive?
+-> Yes
+
+3. How would you define a function in js?
+-> var man = {
+    name: "Vishal",
+    age: 22
+};
+
+4. What are argument objects and typeof function?
+-> argument object is basically the objects passed as arguments to the function.
+example :-
+function func(x, y) {
+    console.log(arguments.length, typeof x, typeof y);
+}
+o/p ==> func(2, "new");
+2 "number" "string"
+
+5. What are callbacks?
+-> callbacks are js functions that are passed as parameter to another function.
+
+6. What are closures?
+-> closures are basically the fact that inner functions will have access to variables of outer function.
+
+7. How to create a cookie?
+-> document.cookie = "k1 = v1; k2 = v2; expires = date";
+To read a cookie just use document.cookie;. To expire cookie set time of expire as past.
+
+8. How can you select an HTML element using js?
+-> getElementById(''), Class(''), TagName('') and querySelector();
+
+9. How to declare a variable?
+-> var(old), const(will not change), let
+
+10. Is js Dynamically typed language?
+-> Yes as values are not associated with data types.
+
+11. What is the differance between '==' and '==='?
+-> == compares value whereas === compares value and type.
+
+12. What are window and document?
+-> The window is the first thing that gets loaded into the browser. This window object has the majority of the properties like length, innerWidth,
+innerHeight, name, if it has been closed, its parents, and more. The document object is your html, aspx, php, or other document that will be loaded
+into the browser. The document actually gets loaded inside the window object and has properties available to it like title, URL, cookie, etc. What 
+does this really mean? That means if you want to access a property for the window it is window.property, if it is document it is 
+window.document.property which is also available in short as document.property.
+An iframe actually is considered as a new window with its own document loaded into it. Here is where it may seem a little odd, but does make sense 
+if you think about it. The original, parent window, is responsible for other windows to be loaded, not the document. The property to access a frame 
+is window.frames[], which is an array of all the frames. If you only have one iframe you access it by using window.frames[0]. Since the iframe is 
+also a window object, accessing window properties of that frame is done by using window.frames[0].mywindowproperty.
+
+13. What is event bubbling?
+-> event bubbling is the execution of events from inner element to outer element.
+
+14. What is NaN?
+-> When a string or something else is passed as a number js throws NaN error.
+
+15. How are Primitives and Object passed in js function?
+-> Primitive are passed as value and object as reference.
+EX -    var age = 30;
+        var obj = {
+            name: 'john',
+            age: 56
+        };
+
+        function change(a, b) {
+            a = 15; //primitive uses copy
+            b.age = 25; //object uses memory referance
+        }
+
+        change(age, obj);
+
+        console.log(age);
+        console.log(obj.age); 
+
+16. How are string converted to integer?
+-> Using the parseInt("x1", x2);
+Here x1 is the string and x2 is the base whose number it will converted to.
+
+17. Js function assingned to variable will only work if the function is defined before invoking it using variable.
+
+18. The call is a prototype of function and takes 2 parameters as input -> Context & Function arguments. The context replaces this in function.
+EX - mathLib.area.call({pi: 3.14159}, 2); can be used if you want pi value other than 3.14 that you set as property.
+EX - var newVolume = cylinder.volume.bind({pi: 3.14159}); // This is not instant call whereas call and apply are.
+    // After some long time, somewhere in the wild 
+    newVolume(2,6); // Now pi is 3.14159
+
+19. There are three kinds of scopes:
+
+    Global scope
+    Local Scope/Function scope
+    Block scope(Introduced in ES6)
+
+EX - Function scope comes into picture when you define a variable locally.
+
+        pi = 3.14;
+        function circumference(radius) {    
+            pi = 3.14159;
+            console.log(2 * pi * radius); // Prints "12.56636" not "12.56"
+        }
+        circumference(2);
+
+EX - Block Scope
+        var a = 10;
+
+        function Foo() {
+        if (true) {
+            let a = 4; //if you use var then 4 will be alerted
+        }
+        alert(a); // alerts '10' because the 'let' keyword
+        }
+        Foo();
+    Functions & conditions are considered as blocks. Above example should alert 4 because conditional statements are executed. 
+    But ES6 destroys scope of block variables and scope went into global.
+
+20. You can create an object in these ways:
+
+    var marks = {};
+    var marks = new Object();
+
+21. You can easily convert a given object into a JSON string and also reverse it back using JSON object’s stringify 
+and parse methods respectively.
+
+    // returns "{"physics":98,"maths":95,"chemistry":91}"
+    JSON.stringify(marks);
+    // Get object from string
+    JSON.parse('{"physics":98,"maths":95,"chemistry":91}');
+
+22. Iterating over the object is easy, using Object.keys
+
+    var highScore = 0; 
+    for (i of Object.keys(marks)) {
+        if (marks[i] > highScore)
+             highScore = marks[i];
+    }
+
+23. Object.prototype.hasOwnProperty is useful to find out whether a given property/key exists in an object. 
+
+24. In JavaScript, inheritance is achieved like this.
+
+        function Dog(name, type) {
+        Animal.call(this, name, type);
+        this.sound = "bow";
+        }
+
+25. Callbacks are the functions those executed after an I/O operation is done.
+EX -    function reqListener () {
+            console.log(this.responseText);
+        }
+
+        var req = new XMLHttpRequest();
+        req.addEventListener("load", reqListener);
+        req.open("GET", "http://www.example.org/example.txt");
+        req.send();
+    Here reqListener is the callback which will be executed when a GET request to is successfully responded back.
+
+26. We can create a new regular expression using :-
+
+        var re = /ar/;
+        var re = new RegExp('ar'); // This too works
+    
+    The above regular expression is an expression that matches with the given set of strings. Once a regex is defined, we can try to fit and see the matching string. we can match strings using exec function.
+
+EX -    re.exec("car"); // returns ["ar", index: 1, input: "car"]
+        re.exec("cab"); // returns null
+
+    There are many types of elements in RegEx. Some of them are:
+
+    Characters Ex: \w — Alphanumeric, \d — Decimal, \D — Non decimal
+    Character classes Ex: [x-y] in range x to y, [^x] not x
+    Quantifiers Ex: +, ?, * (greedy and lazy matchers) [+ - one or more, * - zero or more, ? - need to find out]
+    Boundaries Ex: ^(beginning of input), $(end of input)
+    We can add \b to exclude longer numbers: \b\d{5}\b.
+    The range: {3,5}, match 3-5 times
+    To find numbers from 3 to 5 digits we can put the limits into curly braces: \d{3,5}
+    We can omit the upper limit - Then a regexp \d{3,} looks for sequences of digits of length 3 or more:
+    Using the above things, let us illustrate few examples.
+
+
+        /* Character class */
+        var re1 = /[AEIOU]/;
+        re1.exec("Oval"); // returns ["O", index: 0, input: "Oval"]
+        re1.exec("2456"); // null
+        var re2 = /[1-9]/;
+        re2.exec('mp4'); // returns ["4", index: 2, input: "mp4"]
+
+        /* Characters */
+        var re4 = /\d\D\w/;
+        re4.exec('1232W2sdf'); // returns ["2W2", index: 3, input: "1232W2sdf"]
+        re4.exec('W3q'); // returns null
+
+        /* Boundaries */
+        var re5 = /^\d\D\w/;
+        re5.exec('2W34'); // returns ["2W3", index: 0, input: "2W34"]
+        re5.exec('W34567'); // returns null
+        var re6 = /^[0-9]{5}-[0-9]{5}-[0-9]{5}$/;
+        re6.exec('23451-45242-99078'); // returns ["23451-45242-99078", index: 0, input: "23451-45242-99078"]
+        re6.exec('23451-abcd-efgh-ijkl'); // returns null
+
+        /* Quantifiers */
+        var re7 = /\d+\D+$/;
+        re7.exec('2abcd'); // returns ["2abcd", index: 0, input: "2abcd"]
+        re7.exec('23'); // returns null
+        re7.exec('2abcd3'); // returns null
+        var re8 = /<([\w]+).*>(.*?)<\/\1>/;
+        re8.exec('<p>Hello JS developer</p>'); //returns  ["<p>Hello JS developer</p>", "p", "Hello JS developer", index: 0, input: "<p>Hello JS developer</p>"]
+
+27. Map is a function that works on every array element and returns an array after that.
+EX -    var data = ["2345-34r", "2e345-211", "543-67i4", "346-598"];
+        var re = /[a-z A-Z]/;
+        var cleanedData = data.map((elem) => {return elem.replace(re, "")});
+        console.log(cleanedData); // ["2345-34", "2345-211", "543-674", "346-598"] 
+
+28. Reduce function reduces a given list to one final result.
+        arr.reduce((accumulator,
+            currentValue,
+            currentIndex) => {
+            process(accumulator, currentValue)
+            return intermediateValue/finalValue
+        }, initialAccumulatorValue) // returns reduced value
+
+    EX - var flattenedArray = arr.reduce((accumulator, currentValue) => {
+            return accumulator.concat(currentValue);
+        }, []); // returns [1, 2, 3, 4, 5, 6]
+
+29. FIlter is the third type of functional programming concept. It is close to map as it also processes each element in the array
+and finally returns another array(not returning a value like in reduce). The length of the filtered array can be less than or 
+equal to the original array. Because the filtering condition we pass may exclude few/zero inputs in the output array. The 
+general syntax for JS filter operation is:
+
+    arr.filter((elem) => {
+    return true/false
+    })
+
+EX -    var words = ["tiger", "toast", "boat", "tumor", "track", "bridge"]
+        var newData = words.filter((elem) => {
+            return elem.startsWith('t') && elem.endsWith('r') ? true:false;
+        }); // returns ["tiger", "tumor"]
+
+30. Hoisting is a process of pushing the declared variables to the top of the scope where they are declared while running it. But
+    only the declaration is moved to the top not the intialization.
+For Ex:
+
+EX -    doSomething(foo); // used before
+        var foo; // declared later
+
+    In this mechanism, a JavaScript VM does two things while running a program:
+    First scan the program, collect all the variable and function declarations and assign memory spaces for it.
+    Run the program now by filling variable values assigned any, if not, fill undefined
+
+EX -    var testHoisting = function(a) {
+        console.log(a);
+        }
+        testHoisting(a);
+        var a = 'hey';  //returns undefined not error
+
+31. Event bubbling and capturing are two ways of event propagation in the HTML DOM API when an event occurs in an element 
+inside another element, and both elements have registered a handler for that event. The event propagation mode determines in 
+which order the elements receive the event. With bubbling, the event is first captured and handled by the innermost element and 
+then propagated to outer elements. With capturing, the process is in reverse. We usually attach an event to a handler using the 
+addEventListener function.addEventListener("click", handler, useCapture=false)
+The third argument useCapture is the key. The default value is false. So, it will be a bubbling model where the event is 
+handled by the innermost element first and it propagates outwards till it reaches the parent element. If that argument is 
+true, it is capturing model.
+
+31. To get the ASCII value of a character, use the charCodeAt instance method of the String JavaScript object.
+Example:
+
+var s = 'A';
+console.log(s.charCodeAt(0));
+To convert an ASCII value to its corresponding character use the fromCharCode static method of the String JavaScript object.
+Example:
+
+console.log(String.fromCharCode(65));
+
+32 .Values that return false, when used with boolean.
+    Example = { undefined, null, 0, NaN }
+    So if 0 is to be considered true mention it seprately with OR || operator*
+
+33. person.pop();          // removes from end
+    console.log(person);
+    person.unshift('Mr.'); //adds at start
+    console.log(person); 
+    person.shift();        // removes from start
+
+34. Function inside object property function belongs to window object.
+EX -    var john = {
+        age: 23,
+        myObj: function(){
+            console.log(this, this.age);
+            function innerFunc(){
+                console.log(this);
+            }
+            innerFunc();//Window object
+        }
+    };
+    john.myObj();// returns john first then window object
+
+35. Prototype is another way of inheritance. It helps in adding new properties and methods for inherited objects.
+EX - 
+    var Person = function(name, yob, occupation){
+    this.yob = yob;
+    this.name = name;
+    this.occupation = occupation;
+    this.calculateAge = function(){
+        return 2018 - this.yob;
+    }
+    }
+
+    Person.prototype.myName = function(){
+        return this.name;
+    }
+
+    var john = new Person('John', 1996, 'Dev1');
+    var jane = new Person('Jane', 1998, 'Dev2');
+    var mark = new Person('Mark', 1990, 'Dev3');
+
+36. IIFE - Immediately Invoked Function Expression, use for protecting scope of a function from its environment.
+EX -    (function (luck) {
+            var score = Math.random() * 10;
+            console.log(score >= (5 - luck));
+        })(2);
+
+37. Closures - The inner function can always access the contents of outer function*/
+
+EX - 
+        function askQuestion(proffesion) {
+            if(proffesion === 'dev'){
+                return function(name) {
+                    console.log(name + ' is a dev');
+                }
+            } else {
+                return function(name) {
+                    console.log(name + ' is not dev');
+                }
+            }
+        }
+
+        askQuestion('dev')('john');
+        askQuestion('dev ops')('johnny');
+
+38. Bind, Call and Apply methods*/
+
+        var Person = function(age, name, job) {
+            this.age = age;
+            this.job = job;
+            this.name = name;
+            
+            this.greeting = function(timeOfDay, nationality){
+                if(timeOfDay === 'morning'){
+                    console.log('Hi my name is '+ this.name + ' good Morning.  I am from ' + nationality );
+                }else{
+                    console.log('Hi my job is of a '+ this.job + ' right now.  I am from ' + nationality);
+                }
+            }
+        }
+
+
+        var mary = {
+            name: 'Mary',
+            job: 'Teacher'
+        };
+
+        john = new Person(43, 'John', 'Developer');
+
+        john.greeting('morning', 'India');
+
+        john.greeting.call(mary,'morning', 'nepal');
+
+        //Apply is same as call but it accepts arguments for function as array like 
+        //john.greeting.call(mary,['morning', 'nepal']);
+
+        var johnForeigner = john.greeting.bind(john, 'morning', 'Indusaia');
+        johnForeigner();
+
+        var maryForeigner = john.greeting.bind(mary, 'night');
+        maryForeigner('nepal');
+
+39. Advantages of Arrow functions
+    - We are able to omit the curly braces and the return statement due to implicit returns, but only if there is no block. 
+    EX - var timesTwo = params => params * 2
+         timesTwo(4);  // 8
+    
+    - ES6 arrow functions can’t be bound to a this keyword, so it will lexically go up a scope, and use the value of this in 
+      the scope in which it was defined.
+
+    - However don't use arrow functions for object declaration and callback function with dynamic context.
+
+40. EX - 
+        var questionaire = new Map();
+
+        questionaire.set('Question.1', 'What is JS full form ?');
+        questionaire.set(1, 'Java');
+        questionaire.set(2, 'JavaScript');
+        questionaire.set(3, 'JScript');
+        questionaire.set('answer', 2);
+        questionaire.set(true, 'Correct');
+        questionaire.set(false, 'Try Again');
+
+        console.log(questionaire.get('Question.1'));
+
+        for (let [key, value] of questionaire.entries()) {
+            if(typeof(key) === 'number'){
+            console.log(`${key} .) ${value}`);
+            }
+        } 
+
+        const userAnswer = parseInt(prompt('Enter correct option'));
+        console.log(questionaire.get(questionaire.get('answer') === userAnswer));
+
+
+41. Methods to add event listener to css elements with existing function or defining anonymous function.
+EX - 
+                document.querySelector(domItems.inputBtn).addEventListener('click', addItem);
+                document.addEventListener('keypress', function(event) {
+                    if(event.keyCode === 13 || event.which === 13) {
+                        addItem();
+                    }
+                });
+
+42. Getting values from CSS 
+EX - 
+        type: document.querySelector(domString.inputType).value
