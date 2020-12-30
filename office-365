@@ -1,0 +1,20 @@
+1. preferance user agreement in babylon which cannot be changed completely inside babylon. (officeOnlineUserConsent)
+
+2. Login as acnxAdmin to change settings for allowing user to access office serivces.
+
+3. /home/vishvish/viewer/babylon/webapp-src/src/rsrc/document/view/directives/officeOnlineViewer/officeOnlineLoader.tpl.html
+is file that contact microsoft using token to load document.
+
+4. /home/vishvish/viewer/babylon/webapp-src/src/rsrc/document/view/templates/fileViewTab.tpl.html 
+takes care of which view is to be loaded based on file type
+
+5. /home/vishvish/viewer/babylon/webapp-src/src/rsrc/document/view/directives/officeOnlinePostEditAction/officeOnlinePostEditAction.js
+controls when document can be superseded and saved post edit.
+
+6. Edit button comes for latest document or saved draft.
+
+7. officeOnlineDraftDetails handles left hand side panel for versions of document.
+
+8. widgets.js for aconex inbuilt widget.
+
+9. REsponce for file actions contains the URL and access tokens.

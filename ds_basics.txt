@@ -26,17 +26,23 @@ public static int lcs(char[] a, char[] b) {
 2. Longest Increasing Subsequence
 Solution:-
 import java.util.Arrays;
-public static int lis(int[] a) {
-    int[] l = new int[a.length];
-    Arrays.fill(l, 1);
-    for(int i = 1; i < a.length; i++) {
-        for(int j = 0; j < i; j++) {
-            if(a[i] > a[j] && l[i] < l[j] + 1) {
-                l[i] = l[j] + 1;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] receivedArray = new int[]{10, 22, 9, 33, 21, 50, 41, 60, 80};
+        int lengthLongestCommonSubsequence = 0;
+        int[] recordCurrentMaxForEachIndex = new int[receivedArray.length];
+        Arrays.fill(recordCurrentMaxForEachIndex, 1);
+        for(int i = 1; i < receivedArray.length; i++) {
+            for(int j = 0; j < i; j++) {
+                if(receivedArray[j] < receivedArray[i] && recordCurrentMaxForEachIndex[i] < recordCurrentMaxForEachIndex[j] + 1) {
+                    recordCurrentMaxForEachIndex[i] = recordCurrentMaxForEachIndex[j] + 1;
+                }
             }
+            lengthLongestCommonSubsequence = Math.max(lengthLongestCommonSubsequence, recordCurrentMaxForEachIndex[i]);
         }
+        System.out.println(lengthLongestCommonSubsequence);
     }
-    return biggest(l);
 }
 
 3. Convert one string to another using replace, remove or insert operations
@@ -103,27 +109,34 @@ public class java_rough {
 
 5. Knap-Sack Problem 
 Solution:-
-public static int ksp(int[] wt, int[] v, int sack) {
-    int m;
-    m = wt.length;
-
-    int[][] valueArray = new int[m+1][sack+1];
-    for(int i = 0; i <= m; i++) {
-        valueArray[i][0] = 0;
-    } 
-    for(int j = 1; j <= sack; j++) {
-        valueArray[0][j] = 0;
+class java_rough {
+    public static void main(String[] args) {
+        int[] weights = new int[]{10, 20, 30};
+        int[] value = new int[]{60, 100, 120};
+        int sackCapacity  = 50;
+        System.out.println(knapSack(weights, value, sackCapacity));
     }
-    for(int i = 1; i <= m; i++) {
-        for(int j = 1; j <= sack; j++) {
-            if(wt[i - 1] <= j) 
-                lengthArray[i][j] = max(v[i - 1] + valueArray[i-1][j - wt[i - 1]], valueArray[i - 1][j]);
-            } else {
-                valueArray[i][j] = valueArray[i - 1][j];
+
+    public static int knapSack(int[] weights, int[] value, int sackCapacity) {
+        int[][] sampleSpace = new int[sackCapacity + 1][value.length + 1];
+        
+        for(int i = 0; i <= value.length; i++) {
+            sampleSpace[0][i] = 0;
+            sampleSpace[i][0] = 0;
+        }
+
+        for(int i = 1; i <= sackCapacity; i++) {
+            for(int j = 1; j <= value.length; j++) {
+                if(weights[j - 1] <= i) {
+                    sampleSpace[i][j] = Math.max(value[j - 1] + sampleSpace[i - weights[j  -1]][j], sampleSpace[i - 1][j]);
+                } else {
+                    sampleSpace[i][j] = sampleSpace[i][j - 1];
+                }
             }
         }
+
+        return sampleSpace[sackCapacity][value.length];
     }
-    return lengthArray[m][n];
 }
 
 
@@ -1481,12 +1494,8 @@ class java_rough {
     public static void main(String[] args) {
         int number;
         number = 54;
-        while(number % 2 == 0) {
-            System.out.print("2\t");
-            number /= 2;
-        }
 
-        for(int i = 3; i < Math.sqrt(number); i++) {
+        for(int i = 2; i < Math.sqrt(number); i++) {
             while(number % i == 0) {
                 System.out.print(i+"\t");
                 number /= i;
@@ -1810,6 +1819,7 @@ class java_rough {
        kmp(data, pattern);
     }
 }
+
 47. Possible paths for n*m matrix
 
 
@@ -2281,7 +2291,7 @@ if(n < 0) {
 }
 return c;
 
-59. Longest palindromic substring in a present in a given string
+59. Longest palindromic substring present in a given string
 
 class java_rough {
     public static void main(String[] args) {
@@ -2326,7 +2336,13 @@ class java_rough {
         }
     }
 }
-60. Printing all permutations of a String by Backtracking
+
+60. Printing all permutations of a String by Backtracking : 
+1. Pass string , 0  and LENGTH OF STRING TO FUNCTION.
+2. Inside permute function which is the recursive function check if lower index ==  upper index, then print th string.
+3. Else run a for loop from lower index to upper index swapping lower element with ith index;
+4. Call permute function again to call on this modifies string and lower + 1 index.
+5. Swap back.
 
 class java_rough {
     public static String swap(String sample, int i, int j) {
@@ -2360,6 +2376,7 @@ class java_rough {
         permute(sample, 0, sample.length() - 1);
     }
 }
+
 61. Finding max differance between array elements st smaller element comes before larger one
 
 class java_rough {
@@ -2416,7 +2433,11 @@ class java_rough {
        System.out.println(Math.round(n*n*1000.0) / 1000.0);
     }
 }
-64. Calculating number of BST possible from n values given
+64. Calculating number of BST possible from n distinct values given
+The approach uses the fact that when traversing through element in ascending order you can get elements that are going to be part 
+of the right or left subtree. With that information you can calculate the number of possibilities to create BST from number of 
+nodes in each of these subtrees. 
+Total number of possible Binary Search Trees with n different keys (countBST(n)) = (2n)! / ((n + 1)! * n!)
 
 class java_rough {
     public static void main(String[] args) {
@@ -3023,7 +3044,7 @@ class java_rough {
     }
 }
 
-78. Toppological sort in Graph
+78. Topological sort in Graph
 
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -3292,7 +3313,8 @@ class java_rough {
     }
 }
 
-82. Prims Algorithm for Minimum Spanning Tree of a graph
+82. Prims Algorithm for Minimum Spanning Tree of a graph: Keep on selecting the minimum weight edge from any of the visited 
+vertices till all vertices are covered.
 
  - Have a adjacencyMatrix having path weights between vertices
  - Add first vertex into visited set
@@ -3537,8 +3559,6 @@ class java_rough {
 
 86. Flattening linked list :-
 
-import java.util.LinkedList;
-
 class java_rough {
     static class Node {
         int data; 
@@ -3549,42 +3569,42 @@ class java_rough {
             right = null; 
             down = null; 
         }
-        
-        static Node flatten(Node root) {
-            Node next;
-            while(root != null && root.right != null) {
-                next = root.right.right;
-                root.right.right = null;
-                root = merge(root, root.right);
-                root.right = next;
-            }
-            return root;
+
+        public static Node flattenLinkedList(Node root) {
+          Node firstList, secondList;
+          firstList = root;
+          secondList = root.right;
+          while(secondList != null) {
+            firstList = mergeLinkedList(firstList, secondList);
+            secondList = secondList.right;
+          }
+          return firstList;
         }
-                
 
-        static Node merge(Node list1, Node list2) {
-            Node ptr1, ptr2, next2, head;
-            head = list1;
-            ptr1 = head.down;
-            ptr2 = list2;
-
-            while(ptr1 != null && ptr2 != null) {
-                if(ptr1.data > ptr2.data) {
-                    System.out.println(ptr1.data + " is bigger than " + ptr2.data);
-                    head.down = ptr2;
-                    next2 = ptr2.down;
-                    ptr2.down = ptr1;
-                    ptr2 = next2;
-                } else {
-                    head = ptr1;
-                    System.out.println("Head is at " + head.data);
-                    ptr1 = ptr1.down;
-                }
+        public static Node mergeLinkedList(Node firstList, Node secondList) {
+          Node resultList, resultNode;
+          resultList = firstList;
+          resultNode = resultList;
+          firstList = firstList.down;
+          while(firstList != null && secondList != null) {
+            if(firstList.data < secondList.data) {
+              resultNode.down = firstList;
+              firstList = firstList.down;
+            } else {
+              resultNode.down = secondList;
+              secondList = secondList.down;
             }
-            if(ptr2 != null) {
-                head.down = ptr2;
-            }
-            return list1;
+            resultNode = resultNode.down;
+          }
+          if(firstList != null) {
+            resultNode.down = firstList;
+          }
+          if(secondList != null) {
+            resultNode.down = secondList;
+          }
+          resultNode = resultNode.down;
+          resultNode.down = null;
+          return resultList;
         }
     }
 
@@ -3613,7 +3633,7 @@ class java_rough {
        n3.down = n31;
        n31.down = n32;
 
-       Node start = Node.flatten(n1);
+       Node start = Node.flattenLinkedList(n1);
 
        while(start != null) {
            System.out.println(start.data);
@@ -3628,7 +3648,7 @@ class java_rough {
   - If there is a back edge ie graph has cycle
   - Back edge is when a vertex is visited again via a vertex that is not its parent
 
-  import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -3708,6 +3728,36 @@ class java_rough {
             }
             return java_rough_instance;
         }
+}
+
+EX : 
+class java_rough {
+    public static class demoSingleton {
+        private static demoSingleton singleDemoSingletonObject = null;
+        private static String msg;
+        private demoSingleton() {}
+        private demoSingleton(String msgReceived) {
+            msg = msgReceived;
+        }
+        private static demoSingleton getDemoSingleton(String msgReceived) {
+            if(singleDemoSingletonObject == null) {
+                singleDemoSingletonObject = new demoSingleton(msgReceived);
+            }
+            return singleDemoSingletonObject;
+        }
+        public static String getMsg() {
+            return demoSingleton.msg;
+        }
+    }
+
+    public static String printMsg(String msgReceived) {
+        demoSingleton.getDemoSingleton(msgReceived);
+        return demoSingleton.getMsg();
+    }
+    public static void main(String[] args) {
+        System.out.println(printMsg("first"));
+        System.out.println(printMsg("second"));
+    }
 }
 
 91. Finding Kth largest element using heapify
@@ -3809,27 +3859,30 @@ class java_rough {
     }
 }
 
-93. Stock Exchange problem: https://practice.geeksforgeeks.org/problems/stock-buy-and-sell/
+93. Stock Exchange problem: https://www.geeksforgeeks.org/stock-buy-sell/
 class java_rough {
     public static void main(String[] args) {
-        //int[] record = new int[]{23, 13, 25, 29, 33, 19, 34, 45, 65, 67};
-        int[] record = new int[]{100, 180, 260, 310, 40, 535, 695};
-        int last, first;
-        last = 1;
-        first = 0;
-        while(last < record.length) {
-            if(record[last - 1] > record[last]) {
-                if(first == last - 1) {
-                    first = last;
-                } else {
-                    System.out.println("Days: " + first + " " + (last - 1));
-                    first = last;
+        int[] prices = new int[]{100, 180, 260, 310, 40, 535, 695};
+        int index = 0;
+        int currentPrice = 0;
+        int profit = 0;
+        while(index < prices.length - 1) {
+            if(prices[index] < prices[index + 1]) {
+                if(currentPrice == 0) {
+                    currentPrice = prices[index];
                 }
-            } else if(last == record.length - 1) {
-                System.out.println("Days: " + first + " " + (last));
-            } 
-            last++;
+            } else {
+                if(currentPrice > 0) {
+                    profit += (prices[index] - currentPrice);
+                    currentPrice = 0;
+                }
+            }
+            index ++;
         }
+        if(prices[index] > currentPrice && currentPrice > 0) {
+            profit += (prices[index] - currentPrice);
+        }
+        System.out.println(profit);
     }
 }
 
@@ -3894,7 +3947,8 @@ class java_rough {
     }
 }
 
-96. Reversing order of words in stringimport java.util.Stack;
+96. Reversing order of words in string
+import java.util.Stack;
 class java_rough {
     public static void main(String[] args) {
         String input = "getting good at coding needs a lot of practice";
@@ -4415,7 +4469,7 @@ class java_rough {
             remainders[numbers[i] % divisor]++;
         }
 
-        if(divisor % 2 ==0) {
+        if(divisor % 2 == 0) {
             remainders[divisor/2] = Math.min(1, remainders[divisor/2]);
         }
 
@@ -4449,8 +4503,1759 @@ class java_rough {
     }
 }
 
+111. Seprate numbers given if they are consecutive
+
+static void separateNumbers(String s) {
+        long temp;
+        String result;
+        for(int i = 1; i <= s.length()/2; i++) {
+            result = s.substring(0, i);
+            temp = Long.parseLong(result);
+            while(result.length() < s.length()) {
+                temp++;
+                result = result + String.valueOf(temp);
+            }
+            if(result.equals(s)) {
+                System.out.println("YES " + s.substring(0, i));
+                return;
+            }
+        }
+        System.out.println("NO");
+    }
+
+112. Finding max number possible from swapping upto k times in given array
+
+static int[] largestPermutation(int k, int[] arr) {
+        int swaps = 0;
+        int index = 0;
+        int tempIndex = 0;
+        int temp;
+        int[] tempArray = new int[arr.length];
+        for(int i = 0; i < arr.length; i++) {
+            tempArray[i] = arr[i];
+        }
+        Arrays.sort(tempArray);
+        while(swaps < k && index < arr.length) {
+            if(tempArray[arr.length - 1 - index] != arr[index]) {
+                for(int i = index + 1; i < arr.length; i++) {
+                    if(arr[i] == tempArray[arr.length - 1 - index]) {
+                        tempIndex = i;
+                        break;
+                    }
+                }
+                temp = arr[tempIndex];
+                arr[tempIndex] = arr[index];
+                arr[index] = temp;
+                swaps++;
+            }
+            index++;
+        }
+        return arr;
+    }
 
 
+113. Finding number of islands present in given grid:
+
+class java_rough {
+
+    public static int[][] bfs(int[][] locations, int i, int j) {
+        if(i < 0 || i >= locations.length || j < 0 || j >= locations[i].length || locations[i][j] == 0) {
+            return locations;
+        }
+        locations[i][j] = 0;
+        bfs(locations, i + 1, j);
+        bfs(locations, i - 1, j);
+        bfs(locations, i, j + 1);
+        bfs(locations, i, j - 1);
+
+        return locations;
+    }
+    public static void main(String[] args) {
+        int[][] locations = new int[][]{{1,1,0,0,0},
+                                        {1,1,0,0,0},
+                                        {0,0,1,0,0},
+                                        {0,0,0,1,1}};
+
+        int islands = 0;
+
+        for(int i = 0; i < locations.length; i++) {
+            for(int j = 0; j < locations[i].length; j++) {
+                if(locations[i][j] == 1) {
+                    islands++;
+                    locations = bfs(locations, i, j);
+                }
+            }
+        }
+        System.out.println(islands);
+    }
+}
+
+114. Pascals triangle
+
+class java_rough {
+    public static void main(String[] args) {
+        int rows = 5;
+        int[][] pascals = new int[rows][rows]
+;        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j <= i; j++) {
+                if(j == 0 || j == i) {
+                    pascals[i][j] = 1;
+                } else {
+                    pascals[i][j] = pascals[i - 1][j - 1] + pascals[i  -1][j];
+                }
+            }
+        }
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j <= i; j++) {
+                System.out.print(pascals[i][j]);
+            }
+            System.out.println();
+        }
+    }
+}
+
+115. Merge two Binary trees:
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static void lot(node root) {
+            Queue<node> queue = new LinkedList<>();
+            queue.add(root);
+            node temp;
+                while(!queue.isEmpty()) {
+                    temp = queue.poll();
+                    System.out.print(temp.value + ", ");
+                    if(temp.lc != null) {
+                        queue.add(temp.lc);
+                    }
+
+                    if(temp.rc != null) {
+                        queue.add(temp.rc);
+                    }
+                }
+                System.out.println("lot traversal");
+        }
+
+        public static node merged(node root, node root1) {
+            node result = null;
+            if(root == null && root1 == null) {
+                return result;
+            } else if(root != null && root1 != null) {
+                result = new node(root.value + root1.value);
+                result.lc = merged(root.lc, root1.lc);
+                result.rc = merged(root.rc, root1.rc);
+            } else if(root != null) {
+                result = new node(root.value);
+                result.lc = merged(root.lc, null);
+                result.rc = merged(root.rc, null);
+            } else {
+                result = new node(root1.value);
+                result.lc = merged(root1.lc, null);
+                result.rc = merged(root1.rc, null);
+            } //8, 1, 7, 1, 2, 6, 8, 2, 8, 10, 9, 12,
+            return result;
+        }
+    }
+    public static void main(String[] args) {
+        node root = new node(3);
+        root.insert(root, 1);
+        root.insert(root, 7);
+        root.insert(root, 2);
+        root.insert(root, 6);
+        root.insert(root, 8);
+
+        node root1 = new node(5);
+        root.insert(root1, 2);
+        root.insert(root1, 10);
+        root.insert(root1, 1);
+        root.insert(root1, 8);
+        root.insert(root1, 12);
+        root.insert(root1, 9);
+
+        node.lot(node.merged(root, root1));
+    }
+}
+
+116. Create a mirror image of given tree
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+class java_rough {
+    static class node {
+        public int value;
+        public node lc;
+        public node rc;
+
+        public node(int value) {
+            this.value = value;
+            this.lc = null;
+            this.rc = null;
+        }
+
+        public node insert(node root, int value) {
+            if(root == null) {
+                //System.out.println(value);
+                root = new node(value);
+            } else {
+                if(value > root.value) {
+                    //System.out.println("rc");
+                    root.rc = insert(root.rc, value);
+                } else {
+                    //System.out.println("lc");
+                    root.lc = insert(root.lc, value);
+                }
+            }
+            return root;
+        }
+
+        public static void lot(node root) {
+            Queue<node> queue = new LinkedList<>();
+            queue.add(root);
+            node temp;
+                while(!queue.isEmpty()) {
+                    temp = queue.poll();
+                    System.out.print(temp.value + ", ");
+                    if(temp.lc != null) {
+                        queue.add(temp.lc);
+                    }
+
+                    if(temp.rc != null) {
+                        queue.add(temp.rc);
+                    }
+                }
+                System.out.println("lot traversal");
+        }
+
+        public static node swap(node root) {
+            if(root == null) {
+                return root;
+            } else {
+                node temp;
+                temp = root.lc;
+                root.lc = root.rc;
+                root.rc = temp;
+                swap(root.lc);
+                swap(root.rc);
+            }
+            return root;
+        }
+    }
+    public static void main(String[] args) {
+        node root = new node(3);
+        root.insert(root, 1);
+        root.insert(root, 7);
+        root.insert(root, 2);
+        root.insert(root, 6);
+        root.insert(root, 8);
+
+        node.lot(node.swap(root));
+    }
+}
+
+117. Arranging given LL such that elements at odd position are at beginning followed by even positioned values
+
+class java_rough {
+    static class node {
+        int value;
+        node next;
+
+        void setValue(int value) {
+            this.value = value;
+        }
+        void setNode(node next) {
+            this.next = next;
+        }
+
+        int getValue() {
+            return this.value;
+        }
+
+        node getNode() {
+            return this.next;
+        }
+
+        public static node oddEven(node root) {
+            node even = root.next;
+            node evenHead = even;
+            node odd = root;
+            int counter = 0;
+
+            while(even != null && even.next != null) {
+                odd.next = even.next;
+                odd = odd.next;
+                even.next = odd.next;
+                even = even.next;
+                System.out.println(counter++);
+            }
+            System.out.println(odd.value + ", " + evenHead.value);
+            odd.next = evenHead;
+            return root;
+        }
+    }
+
+    public static void main(String[] args) {
+        node n1 = new node();
+        node n2 = new node();
+        node n3 = new node();
+        node n4 = new node();
+        node n5 = new node();
+        node n6 = new node();
+
+        n1.setValue(1);
+        n2.setValue(2);
+        n3.setValue(3);
+        n4.setValue(4);
+        n5.setValue(5);
+        n6.setValue(6);
+
+        n1.setNode(n2);
+        n2.setNode(n3);
+        n3.setNode(n4);
+        n4.setNode(n5);
+        n5.setNode(n6);
+        n6.setNode(null);
+        
+        node temp = node.oddEven(n1);
+        while(temp != null) {
+            System.out.println(temp.getValue());
+            temp = temp.getNode();
+        }
+    }
+}
+
+
+118. Comparing Strings after computing the value considering # is backspace operation
+
+import java.util.Stack;
+
+class java_rough {
+
+    public static String getActualString(String string) {
+        Stack<Character> stack = new Stack<>();
+        for(int i = 0; i < string.length(); i++) {
+            if(string.charAt(i) == '#') {
+                if(!stack.isEmpty())
+                    stack.pop();
+            } else {
+                stack.push(string.charAt(i));
+            }
+        }
+        return String.valueOf(stack);
+    }
+    public static void main(String[] args) {
+        String first = "a##c";
+        String second = "#a#c";
+
+        first = getActualString(first);
+        second = getActualString(second);
+
+        System.out.println(first + ", " + second);
+
+        System.out.println(first.equals(second));
+    }
+}
+
+119. Rooms that can be opened if keys are present in other rooms
+//input: [[1],[2],[3],[]]
+//outout: true
+class Solution {
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        HashSet<Integer> keys = new HashSet<>();
+        Queue<Integer> visited = new LinkedList<>();
+        keys.add(0);
+        visited.add(0);
+        int i;
+        int count = 0;
+        while(!visited.isEmpty()) {
+            i = visited.poll();
+            if(keys.contains(i)) {
+                for(int j : rooms.get(i)) {
+                    if(!keys.contains(j)) {
+                        keys.add(j);
+                        visited.add(j);
+                    }
+                }
+                count++;
+            }
+        }
+        if(count == rooms.size()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+120. Sorted array being sorted after every value is squared : https://leetcode.com/problems/squares-of-a-sorted-array/
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] numbers = new int[]{-6, -4, 0, 2, 5, 7};
+         int i = 0;
+         while(numbers[i] < 0) {
+             i++;
+         }
+         int positive = i;
+         for(i = 0; i < numbers.length; i++) {
+             numbers[i] = (int)Math.pow(numbers[i], 2);
+         }
+         if(positive == 0) {
+            for(int num : numbers) {
+                System.out.println(num);
+            }
+         } else {
+            int negative = positive - 1;
+            while(negative >= 0 && positive < numbers.length) {
+                if(numbers[positive] < numbers[negative]) {
+                    System.out.println(numbers[positive]);
+                    positive++;
+                } else {
+                    System.out.println(numbers[negative]);
+                    negative--;
+                }
+            }
+            if(negative >= 0) {
+                while(negative >= 0) {
+                    System.out.println(numbers[negative]);
+                    negative--;
+                }
+            } else {
+                while(positive < numbers.length) {
+                    System.out.println(numbers[positive]);
+                    positive++;
+                }
+            }
+        }
+    }
+}
+
+121. Selecting two walls that will store the max capacity of Water : https://leetcode.com/problems/container-with-most-water/
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] heights = new int[]{1,8,6,2,5,4,8,3,7};
+        int capacity, leftIndex, rightIndex, volume;
+        leftIndex = 0;
+        rightIndex = heights.length - 1;
+        capacity = 0;
+        volume = 0;
+
+        while(leftIndex <= rightIndex) {
+            volume = heights[leftIndex] < heights[rightIndex] ? heights[leftIndex] : heights[rightIndex];
+            volume *= (rightIndex - leftIndex);
+            if(capacity < volume) {
+                capacity = volume;
+            }
+            if(heights[rightIndex] < heights[leftIndex]) {
+                rightIndex--;
+            } else {
+                leftIndex++;
+            }
+        }
+        System.out.println(capacity);
+    }
+}
+
+122. Adding 3 numbers from Array to get equal or closest to target value
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] nums = new int[]{-1, 2, 1, -4};
+        int first, last, result, target, current;
+        result = nums[0] + nums[1] + nums[nums.length  -1];
+        target = 1;
+        Arrays.sort(nums);
+        for(int i = 0; i < nums.length - 1; i++) {
+            first = i + 1;
+            last = nums.length - 1;
+            while(first < last) {
+                current = nums[i] + nums[first] + nums[last];
+                if(current == target) {
+                    System.out.println(current);
+                    return;
+                } else {
+                    if(current < target) {
+                        first++;
+                    } else {
+                        last--;
+                    }
+                }
+                if(Math.abs(target - current) < Math.abs(target - result)) {
+                    result = current;
+                }
+            }
+        }
+        System.out.println(result);
+    }
+}
+
+123. Finding number repeated in an array multiple times knowing that all number are between 1 and size of array
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] nums = new int[]{3,1,3,4,2};
+        int counter = 0;
+        int fast, slow;
+        slow = nums[0];
+        fast = nums[0];
+        slow = nums[slow];
+        fast = nums[nums[fast]];
+        while(slow != fast) {
+            System.out.println(slow + ", " + fast);
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        }
+        System.out.println(slow);
+        slow = nums[0];
+        while(slow != fast && counter < 7) {
+            System.out.println(slow + ", " + fast);
+            slow = nums[slow];
+            fast = nums[fast];
+            counter++;
+        }
+        System.out.println(fast);
+    }
+}
+
+124. Removing subtree from binary tree of 0 and 1 that do not contain any 1
+
+class Solution {
+    public boolean containsOne(TreeNode root) {
+        if(root == null) {
+            return false;
+        } else {
+            boolean rightOne, leftOne;
+            rightOne = containsOne(root.right);
+            leftOne = containsOne(root.left);
+            if(!rightOne) {
+                root.right = null;
+            }
+            if(!leftOne) {
+                root.left = null;
+            }
+            return (root.val == 1 || rightOne || leftOne);
+        }
+    }
+    public TreeNode pruneTree(TreeNode root) {
+        containsOne(root);
+        return root;
+    }
+}
+
+125. Finding if given cards are consecutive hands given cards and size of hand to be formed
+
+import java.util.Arrays;
+import java.util.TreeMap;
+import java.util.ArrayList;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] cards = new int[]{1,2,3,6,3,4,7,8};
+        Arrays.sort(cards);
+        int hand = 3;
+        TreeMap<Integer, Integer> record = new TreeMap<>();
+        for(int i : cards) {
+            if(record.containsKey(i)) {
+                record.put(i, record.get(i)+1);
+            } else {
+                record.put(i, 1);
+            }
+        }
+        int index = 0;
+        int count = 1;
+        int temp;
+        while(index < cards.length) {
+            temp = cards[index];
+            if(record.get(temp) > 0) {
+                record.put(temp, record.get(temp) - 1);
+                while(count < hand) {
+                    temp++;
+                    if(record.containsKey(temp) && record.get(temp) > 0) {
+                        record.put(temp, record.get(temp) - 1);
+                    } else {
+                        System.out.println(false);
+                        return;
+                    }
+                    count++;
+                }
+            }
+            count = 1;
+            index++;
+        }
+        System.out.println(true);
+    }
+}
+
+126. Arranging LinkedList according to values relative to given target value with values smaller and larger at different sides : https://leetcode.com/problems/partition-list/
+
+class java_rough {
+    static class node {
+        int val;
+        node next;
+
+        void setValue(int value) {
+            this.val = value;
+        }
+        void setNode(node next) {
+            this.next = next;
+        }
+
+        int getValue() {
+            return this.val;
+        }
+
+        node getNode() {
+            return this.next;
+        }
+
+        public static node arrange(node root, int target) {
+            node smaller, larger, nextNode, current, largerPointer, smallerPointer;
+            smaller = null;
+            larger = null;
+            smallerPointer = null;
+            largerPointer = null;
+            current = root;
+            int counter = 0;
+            while(current != null) {
+                nextNode = current.next;
+                if(current.val < target) {
+                    if(smaller == null) {
+                        smaller = current;
+                        smallerPointer = smaller;
+                        System.out.println("smaller start " + smaller.val);
+                    } else {
+                        smaller.next = current;
+                        smaller = smaller.next;
+                        System.out.println("Added smaller " + smaller.val);
+                    }
+                } else {
+                    if(larger == null) {
+                        larger = current;
+                        largerPointer = larger;
+                        System.out.println("larger start " + larger.val);
+                    } else {
+                        larger.next = current;
+                        larger = larger.next;
+                        System.out.println("Added larger " + larger.val);
+                    }
+                }
+                current = nextNode;
+            }
+            if(larger != null) {
+                larger.next = null;   
+            }
+            if(smaller != null) {
+                smaller.next = largerPointer;
+            } else {
+                smaller = largerPointer;
+                return smaller;
+            }
+            return smallerPointer;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        node n1 = new node();
+        node n2 = new node();
+        node n3 = new node();
+        node m1 = new node();
+        node m2 = new node();
+        node m3 = new node();
+
+        n1.setValue(1);
+        n1.setNode(n2);
+
+        n2.setValue(4);
+        n2.setNode(n3);
+        
+        n3.setValue(3);
+        n3.setNode(m1);
+
+        m1.setValue(2);
+        m1.setNode(m2);
+
+        m2.setValue(5);
+        m2.setNode(m3);
+        
+        m3.setValue(2);
+        m3.setNode(null);
+        node temp;
+        temp = node.arrange(n1, 3);;
+        while(temp != null) {
+            System.out.println(temp.val);
+            temp = temp.next;
+        }
+    }
+}
+
+127. Checking if a tree is complete binary tree or not
+import java.util.LinkedList;
+import java.util.Queue;
+
+class java_rough {
+    public boolean isCompleteTree(TreeNode root) {
+        if(root == null) {
+            return true;
+        }
+        Queue<TreeNode> lot = new LinkedList<>();
+        boolean nullVisited = false;
+        lot.add(root);
+        TreeNode temp;
+        while(!lot.isEmpty()) {
+           temp = lot.poll();
+           if(temp == null) {
+               nullVisited = true;
+           } else {
+               if(nullVisited) {
+                   return false;
+               } else {
+                   lot.add(temp.left);
+                   lot.add(temp.right);
+               }
+           }
+        }
+        return true;
+    }
+}
+
+128. Flatenning a tree and representing it as LinkedList in place with all elements as right child of each other : https://leetcode.com/problems/flatten-binary-tree-to-linked-list/submissions/
+// Use Stack for inorder traversal
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
+class java_rough {
+    public void isCompleteTree(TreeNode root) {
+        if(root == null) {
+            return;
+        }
+        Stack<TreeNode> record = new Stack<>();
+        TreeNode temp;
+        record.push(root);
+        
+        while(!record.isEmpty()) {
+            temp = record.pop();
+            if(temp.right != null) {
+                record.push(temp.right);
+            }
+
+            if(temp.left != null) {
+                record.push(temp.left);
+            }
+
+            if(!record.isEmpty()) {
+                temp.right = record.peek();
+            }
+            temp.left = null;
+        }
+    }
+}
+
+129. Finding sum of all left leaf node in a tree : https://leetcode.com/problems/sum-of-left-leaves/submissions/
+
+class Solution {
+    public int sumOfLeftLeaves(TreeNode root) {
+       int sum = 0;
+       int nodePosition = 1;
+       TreeNode temp;
+       Queue<TreeNode> lot = new LinkedList<>();
+       lot.add(root);
+       while(!lot.isEmpty()) {
+           temp = lot.poll();
+           if(temp == null) { 
+               continue; 
+            } else if(temp.left == null && temp.right == null && nodePosition % 2 == 0) {
+               sum += temp.val;
+           } else {
+               lot.add(temp.left);
+               lot.add(temp.right);
+           }
+           nodePosition ++;
+       }
+       return sum;
+    }
+
+130. Reversing only character position in String not of special characters
+
+import java.util.HashSet;
+
+class  java_rough{
+    public static void main(String[] args) {
+        String inputString = "a-bC-dEf-ghIj";
+        char[] result = new char[inputString.length()];
+        char[] inputArray = inputString.toCharArray();
+        int i, j, temp;
+        HashSet<Integer> specialCharacters = new HashSet<>();
+        for(i = 0; i < result.length; i++) {
+            temp = (int) inputArray[i];
+            if(!((temp >= 65 && temp <= 90) || (temp >= 97 && temp <= 122))) {
+                result[i] = inputArray[i];
+                specialCharacters.add(i);
+            }
+        }
+        i = inputArray.length - 1;
+        j = 0;
+        while(i >= 0 && j < inputArray.length) {
+            if(specialCharacters.contains(j)) {
+                j++;
+            } else {
+                temp = (int) inputArray[i];
+                if(specialCharacters.contains(i)) {
+                    i--;
+                } 
+                else {
+                    result[j] = inputArray[i];
+                    j++;
+                    i--;
+                }
+            }
+        }
+        System.out.println(String.valueOf(result));
+    }
+}
+
+131. Checking if number is divisible by all digits present in number : https://leetcode.com/problems/self-dividing-numbers/submissions/
+
+class Solution {
+    public List<Integer> selfDividingNumbers(int left, int right) {
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for(int i = left; i <= right; i++) {
+            if(selfDivisible(i)) {
+                System.out.println(i);
+                numbers.add(i);
+            }   
+        }
+        return numbers;
+    }
+    
+    public boolean selfDivisible(int number) {
+        int temp;
+        int zero = (int) '0';
+        for(char c : String.valueOf(number).toCharArray()) {
+            temp = (int) c;
+            temp -= zero;
+            if(temp == 0 || number % temp != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+132. Getting all common alphabet including duplicates from given strings : https://leetcode.com/problems/find-common-characters/submissions/
+
+class Solution {
+    public List<String> commonChars(String[] A) {
+            int[] frequency = new int[26];
+            Arrays.fill(frequency, Integer.MAX_VALUE);
+            int temp;
+            for(String inputString : A) {
+                int[] current = new int[26];
+                for(int i = 0; i < inputString.length(); i++) {
+                    temp = (int) inputString.charAt(i);
+                    temp -= 97;
+                    current[temp]++;
+                }
+                for(int i = 0; i < 26; i++) {
+                    frequency[i] = Math.min(frequency[i], current[i]);
+                }
+            }
+        
+            List<String> result = new ArrayList<>();
+            for(int i = 0; i < 26; i++) {
+                if(frequency[i] > 0) {
+                    while(frequency[i] > 0) {
+                        result.add("" + (char)(i + 97));
+                        frequency[i]--;
+                    }
+                }
+            }
+        return result;
+        }
+}
+
+135. Executing operations and returning sum of all even values after each operation : https://leetcode.com/problems/sum-of-even-numbers-after-queries/submissions/
+
+ public int[] sumEvenAfterQueries(int[] inputArray, int[][] queries) {
+            int sum = 0;
+            int index, currentValue;
+            int[] result = new int[queries.length];
+            for(int i = 0; i < inputArray.length; i++) {
+                if(inputArray[i] % 2 == 0) {
+                    sum += inputArray[i];
+                }
+            }
+            for(int i = 0; i < queries.length; i++) {
+                index = queries[i][1];
+                System.out.print(sum);
+                currentValue = queries[i][0];
+                if(inputArray[index] % 2 == 0) {
+                    sum -= inputArray[index];
+                }
+                inputArray[index] += currentValue;
+                if(inputArray[index] % 2 == 0) {
+                    sum += inputArray[index];
+                }
+                result[i] = sum;
+            }
+            return result;
+        }
+
+136. Sort array such that even indexes have even value and odd indexes have odd values : https://leetcode.com/problems/sort-array-by-parity-ii/submissions/
+
+    public int[] sortArrayByParityII(int[] arrayNumbers) {
+        int even, odd, temp;
+        even = 0;
+        odd = 1;
+        while(even < arrayNumbers.length && odd < arrayNumbers.length) {
+            while(even < arrayNumbers.length && arrayNumbers[even] % 2 == 0) {
+                even += 2;
+            }
+            while(odd < arrayNumbers.length && arrayNumbers[odd] % 2 == 1) {
+                odd += 2;
+            }
+
+            if(even < arrayNumbers.length && odd < arrayNumbers.length) {
+                temp = arrayNumbers[even];
+                arrayNumbers[even] = arrayNumbers[odd];
+                arrayNumbers[odd] = temp;
+            }
+        }
+        return arrayNumbers;
+    }
+
+137. Minimum size of Subarray for getting sum greater or equal to target value : https://leetcode.com/problems/minimum-size-subarray-sum/submissions/
+
+public int minSubArrayLen(int target, int[] arrayNumbers) {
+        int first, last, sum, window;
+        first = 0;
+        window = Integer.MAX_VALUE;
+        while(first < arrayNumbers.length - 1) {
+            last = first + 1;
+            sum = arrayNumbers[first];
+            while(sum < target && last < arrayNumbers.length) {
+                sum += arrayNumbers[last];
+                last++;
+            }
+            if(sum >= target) {
+                window = Math.min(window, (last - first));
+            }
+            first++;
+        }
+        return window == Integer.MAX_VALUE ? 0 : window;
+    }
+
+138. Maintaining skyline : https://leetcode.com/problems/max-increase-to-keep-city-skyline/submissions/
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+       int[][] grid = new int[][]{
+        {3, 0, 8, 4}, 
+        {2, 4, 5, 7},
+        {9, 2, 6, 3},
+        {0, 3, 1, 0}
+       };
+
+       int[] rowMax = new int[grid.length];
+       int[] columnMax = new int[grid[0].length];
+       int counter = 0;
+       int temp;
+
+       for(int i = 0; i < grid.length; i++) {
+           for(int j = 0; j < grid[i].length; j++) {
+               if(rowMax[i] < grid[i][j]) {
+                   rowMax[i] = grid[i][j];
+               }
+           }
+       }
+
+       for(int i = 0; i < grid[0].length; i++) {
+            for(int j = 0; j < grid.length; j++) {
+                if(columnMax[i] < grid[j][i]) {
+                    columnMax[i] = grid[j][i];
+                }
+            }
+        }
+
+        for(int i = 0; i < grid.length; i++) {
+            for(int j = 0; j < grid[i].length; j++) {
+                temp = (rowMax[i] < columnMax[j] ? rowMax[i] : columnMax[j]);
+                if(grid[i][j] < temp) {
+                    counter += (temp - grid[i][j]);
+                }
+            }
+        }
+
+        System.out.println(counter);
+    }
+}
+
+139. You are given two arrays (without duplicates) nums1 and nums2 where nums1’s elements are subset of nums2. 
+Find all the next greater numbers for nums1's elements in the corresponding places of nums2 : https://leetcode.com/problems/next-greater-element-i/
+
+import java.util.HashMap;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] nums1 = new int[]{2,4};
+        int[] nums2 = new int[]{1,2,3,4};
+        int max, temp;
+        HashMap<Integer, Integer> record= new HashMap<>();
+        record.put(nums2[nums2.length - 1], -1);
+        max = nums2[nums2.length - 1];
+        for(int i = nums2.length - 2; i >= 0; i--) {
+            temp = nums2[i + 1];
+            while(nums2[i] > temp && temp != -1) {
+                temp = record.get(temp);
+            }
+            max = temp;
+            record.put(nums2[i], max);
+        }
+
+        for(int i = 0; i < nums1.length; i++) {
+            System.out.println(record.get(nums1[i]));
+        }
+    }
+}
+
+140. Determinig dominoes fall direction : https://leetcode.com/problems/push-dominoes/submissions/
+
+import java.util.HashMap;
+
+class java_rough {
+    public static void main(String[] args) {
+        String dominoes = ".L.R...LR..L..";
+        int lengthDominoes = dominoes.length();
+        int[] forces = new int[lengthDominoes];
+        int currentForce = 0;
+        StringBuilder result = new StringBuilder("");
+
+        for(int i = 0; i < lengthDominoes; i++) {
+            if(dominoes.charAt(i) == 'R') {
+                currentForce = lengthDominoes;
+            } else if(dominoes.charAt(i) == 'L') {
+                currentForce = 0;
+            } else {
+                if(currentForce > 0) {
+                    currentForce--;
+                }
+            }
+            forces[i] = currentForce;
+        }
+
+        currentForce = 0;
+
+        for(int i = lengthDominoes - 1; i >= 0; i--) {
+            if(dominoes.charAt(i) == 'L') {
+                currentForce = -1 * lengthDominoes;
+            } else if(dominoes.charAt(i) == 'R') {
+                currentForce = 0;
+            } else {
+                if(currentForce < 0) {
+                    currentForce++;
+                }
+            }
+            forces[i] = forces[i] + currentForce;
+        }
+
+        for(int i = 0; i < lengthDominoes; i++) {
+            if(dominoes.charAt(i) == '.' && forces[i] != 0) {
+                if(forces[i] > 0) {
+                    result.append('R');
+                } else {
+                    result.append('L');
+                }
+            } else {
+                result.append(dominoes.charAt(i));
+            }
+        }
+
+        System.out.println(result);
+
+    }
+}
+
+141. Checking minimum number of rotations required for opening a lock : https://leetcode.com/problems/open-the-lock/submissions/
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+
+class java_rough {
+    public static void main(String[] args) {
+        String[] deadends = new String[]{"0201","0101","0102","1212","2002"};
+        String target = "0202";
+        System.out.println(openLock(deadends, target));
+    }
+
+    public static int openLock(String[] deadends, String target) {
+        Queue<String> record = new LinkedList<>();
+        int turn = 0;
+        HashSet<String> ends = new HashSet<>(Arrays.asList(deadends));
+        HashSet<String> visited = new HashSet<>();
+        String possibleChoice;
+        record.add("0000");
+        String temp;
+        int size = 0;
+        while(!record.isEmpty()) {
+            size = record.size();
+            while(size > 0) {
+                temp = record.poll();
+                size --;
+                if(temp.equals(target)) {
+                    System.out.println(temp);
+                    return turn;
+                }
+                visited.add(temp);
+                for(int i = 0; i < target.length(); i++) {
+                    possibleChoice = temp.substring(0, i) + 
+                    String.valueOf(temp.charAt(i) == '9' ? '0' : (temp.charAt(i) - '0' + 1)) + 
+                    temp.substring(i + 1, target.length()); 
+
+                    if(!ends.contains(possibleChoice) && !visited.contains(possibleChoice)) {
+                        //System.out.println(possibleChoice);
+                        record.add(possibleChoice);
+                    }
+                }
+
+                for(int i = 0; i < target.length(); i++) {
+                    possibleChoice = temp.substring(0, i) + 
+                    String.valueOf(temp.charAt(i) == '0' ? '9' : (temp.charAt(i) - '0' - 1)) + 
+                    temp.substring(i + 1, target.length()); 
+
+                    if(!ends.contains(possibleChoice) && !visited.contains(possibleChoice)) {
+                        //System.out.println(possibleChoice);
+                        record.add(possibleChoice);
+                    }
+                }
+            }
+            turn++;
+        }
+        return turn;
+    }
+}
+
+142. Finding max consecutive 1 in a 0/1 array with operations allowed to swap given 0 to 1 : https://leetcode.com/problems/max-consecutive-ones-iii/submissions/
+
+class java_rough  {
+    public static void main(String[] args) {
+        int[] inputArray = new int[]{1,1,1,0,0,0,1,1,1,1,0};
+        int allowedOperations = 2;
+        System.out.println(longestOnes(inputArray, allowedOperations));
+    }
+
+    public static int longestOnes(int[] inputArray, int allowedOperations) {
+        int first, last, maxWindow;
+        first = 0;
+        last = 0;
+        maxWindow = 0;
+        while(last < inputArray.length) {
+            if(inputArray[last] == 1) {
+                last++;
+                
+            } else {
+                if(allowedOperations <= 0) { 
+                    if(inputArray[first] == 0) {
+                        allowedOperations++;
+                    }
+                    first++;
+                } else {
+                    allowedOperations--;
+                    last++;
+                }
+            }
+            maxWindow = maxWindow < (last - first) ? (last - first) : maxWindow;
+        }
+        return maxWindow;
+    }
+}
+
+143. Finding partition in given string such that each character is present in one partition only and returning all such partitions length : https://leetcode.com/problems/partition-labels/submissions/
+
+import java.util.ArrayList;
+import java.util.List;
+
+class java_rough {
+    public static void main(String[] args) {
+        String inputString = "ababcbacadefegdehijhklij";
+        for(int i : partitionLabels(inputString)) {
+            System.out.println(i);
+        }
+    }
+
+    public static List<Integer> partitionLabels(String inputString) {
+        List<Integer> result = new ArrayList<>();
+        int temp;
+        int start = 0;
+        int end = 0;
+        int[] alphabets = new int[26];
+        for(int i = 0; i < inputString.length(); i++) {
+            temp = (int) inputString.charAt(i);
+            temp -= 97;
+            alphabets[temp] = i;
+        }
+        for(int i = 0; i < inputString.length(); i++) {
+            temp = (int) inputString.charAt(i);
+            temp -= 97;
+            end = Math.max(end, alphabets[temp]);
+            if(i == end) {
+                result.add(end - start + 1);
+                start = end + 1;
+                end = 0;
+            }
+        }
+        return result;
+    }
+}
+
+145. Finding number that is repeated when numbers given in an array are between 1 and length of array : https://leetcode.com/problems/find-all-duplicates-in-an-array/submissions/
+
+import java.util.ArrayList;
+import java.util.List;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] inputArray = new int[]{4,3,2,7,8,2,3,1};
+        findDuplicates(inputArray).forEach(num -> System.out.println(num));
+    }
+
+    public static List<Integer> findDuplicates(int[] nums) {
+        List<Integer> result = new ArrayList<>();
+        int index;
+        for(int i = 0; i < nums.length; i++) {
+            index = Math.abs(nums[i]) - 1;
+            if(nums[index] < 0) {
+                result.add(index + 1);
+            } else {
+                nums[index] = -1 * nums[index];
+            }
+        }
+        return result;
+    }
+}
+
+146. Checking asteroid trajectories for collision : https://leetcode.com/problems/asteroid-collision/submissions/
+
+import java.util.Stack;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] asteroids = new int[]{-2,-2,1,-2};
+        for (int i : asteroidCollision(asteroids)) {
+            System.out.println(i);
+        }
+    }
+
+    public static int[] asteroidCollision(int[] asteroids) {
+        Stack<Integer> orderAsteroids = new Stack<>();
+        int asteroidSize;
+        for(int i = 0; i < asteroids.length; i++) {
+            asteroidSize = asteroids[i];
+            if(orderAsteroids.isEmpty() || asteroidSize > 0) {
+                orderAsteroids.push(asteroidSize);
+            } else {
+                int peakElement = orderAsteroids.peek();
+                int currentAstreoid = 0;
+                if(peakElement > 0) {
+                   while(!orderAsteroids.isEmpty() && peakElement > 0) {
+                        if(peakElement < Math.abs(asteroidSize)) {
+                            orderAsteroids.pop();
+                            currentAstreoid = asteroidSize;
+                            if(!orderAsteroids.isEmpty()) {
+                                peakElement = orderAsteroids.peek();
+                            }
+                        } else if(peakElement == Math.abs(asteroidSize)) {
+                            orderAsteroids.pop();
+                            currentAstreoid = 0;
+                            break;
+                        } else {
+                            currentAstreoid = 0;
+                            break;
+                        }
+                   }
+                   if(currentAstreoid != 0) {
+                       orderAsteroids.push(currentAstreoid);
+                   }
+                } else {
+                    orderAsteroids.push(asteroidSize);
+                }
+            }
+        }
+        int[] result = new int[orderAsteroids.size()];
+        for(int i = orderAsteroids.size() - 1; i >= 0; i--) {
+            result[i] = orderAsteroids.pop();
+        }
+        return result;
+    }
+}
+
+147. Rotate a given square matrix : https://leetcode.com/problems/rotate-image/
+
+class java_rough {
+    public static void main(String[] args) {
+        int[][] matrix = {
+            {1,2,3},
+            {4,5,6},
+            {7,8,9}
+        };
+        matrix = rotate(matrix);
+        for(int i = 0; i < matrix.length; i++) {
+            for(int j = 0; j < matrix.length; j++) {
+                System.out.print(matrix[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public static int[][] rotate(int[][] matrix) {
+        int temp;
+        for(int i = 0; i < matrix.length; i++) {
+            for(int j = i; j < matrix.length; j++) {
+                if(i != j) {
+                    temp = matrix[i][j];
+                    matrix[i][j] = matrix[j][i];
+                    matrix[j][i] = temp;
+                }
+            }
+        }
+
+        for(int i = 0; i < matrix.length; i++) {
+            int first, last;
+            first = 0;
+            last = matrix.length - 1;
+            while(first < last) {
+                temp = matrix[i][first];
+                matrix[i][first] = matrix[i][last];
+                matrix[i][last] = temp;
+                first++;
+                last--;
+            } 
+        }
+        return matrix; 
+    }
+}
+
+148. Return number of possible subsets made of contiguous sub-array whose product is less than given target value : https://leetcode.com/problems/subarray-product-less-than-k/submissions/
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] nums = new int[]{1,1,1};
+        int target = 2;
+        System.out.println(numSubarrayProductLessThanK(nums, target));
+    }
+
+    public static int numSubarrayProductLessThanK(int[] nums, int target) {
+        if(target <= 1) {
+            return 0;
+        }
+
+        int first, last, subSets, product;
+        first = 0;
+        last = 0;
+        subSets = 0; 
+        product = 1;
+
+        while(last < nums.length) {
+            product *= nums[last];
+            if(product >= target) {
+                while(product >= target && first <= last) {
+                     product /= nums[first];
+                     first++;
+                }
+            }
+            subSets += (last - first + 1);
+            last++;
+        }
+        return subSets;
+    }
+}
+
+149. Finding sum of deepest leaves in a tree : https://leetcode.com/problems/deepest-leaves-sum/submissions/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public int deepestLeavesSum(TreeNode root) {
+        Queue<TreeNode> traversal = new LinkedList<>();
+        int sum = 0;
+        traversal.add(root);
+        traversal.add(null);
+        TreeNode temp;
+        while(!traversal.isEmpty()) {
+            temp = traversal.poll();
+            if(temp == null) {
+                if(!traversal.isEmpty()) {
+                    traversal.add(null);
+                    sum = 0;
+                }
+            } else {
+                if(temp.left != null) {
+                    traversal.add(temp.left);
+                }
+                if(temp.right != null) {
+                    traversal.add(temp.right);
+                }
+                sum += temp.val;
+            }
+        }
+        return sum;
+    }
+}
+
+150. Task Scheduler : https://leetcode.com/problems/task-scheduler/submissions/
+
+import java.util.Arrays;
+
+class java_rough {
+    public static void main(String[] args) {
+        char[] tasks = new char[]{'A','A','A','B','B','B'};
+        int coolOffPeriod = 2;
+        System.out.println(leastInterval(tasks, coolOffPeriod));
+    }
+
+    public static int leastInterval(char[] tasks, int coolOffPeriod) {
+        char[] frequencies = new char[26];
+        int temp, idleSlots, index, mostFrequent;
+        for(int i = 0; i < tasks.length; i++) {
+            temp = (int) tasks[i];
+            temp -= 65;
+            frequencies[temp]++;
+        }
+        Arrays.sort(frequencies);
+        mostFrequent = frequencies[25];
+        idleSlots = (mostFrequent - 1) * coolOffPeriod;
+        index = 24;
+
+        while(idleSlots > 0 && index >= 0) {
+            idleSlots -= (Math.min(mostFrequent - 1, frequencies[index]));
+            index --;
+        }
+        return idleSlots > 0 ? idleSlots + tasks.length : tasks.length;
+    }
+
+}
+
+151. Completing checkers game : https://leetcode.com/problems/surrounded-regions/submissions/
+
+class java_rough {
+    public static void main(String[] args) {
+        char[][] board = new char[][]{
+            {'X','X','X','X'},
+            {'X','0','0','X'},
+            {'X','X','0','X'}, 
+            {'X','0','X','X'},
+        };
+        solve(board);
+    }
+
+    public static void solve(char[][] board) {
+        for(int i = 0; i < board.length; i++) {
+            if(board[0][i] == '0') {
+                board = updateBoard(board, 0, i);
+            }
+            if(board[board.length - 1][i] == '0') {
+                board = updateBoard(board, board.length - 1, i);
+            }
+            if(board[i][0] == '0') {
+                board = updateBoard(board, i, 0);
+            }
+            if(board[i][board.length - 1] == '0') {
+                board = updateBoard(board, i, board.length - 1);
+            }
+        }
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board.length; j++) {
+                if(board[i][j] == 'F') {
+                    System.out.print('0');
+                } else {
+                    System.out.print('X');
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public static char[][] updateBoard(char[][] board, int x, int y) {
+        if(x >= 0 && x < board.length && y >= 0 && y < board.length && board[x][y] == '0') {
+            board[x][y] = 'F';
+            board = updateBoard(board, x + 1, y);
+            board = updateBoard(board, x - 1, y);
+            board = updateBoard(board, x, y + 1);
+            board = updateBoard(board, x, y - 1);
+        }
+        return board;
+    }
+}
+
+152. Finding out which queens can attack the king in given 8 * 8 chess board : https://leetcode.com/problems/queens-that-can-attack-the-king/submissions/
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[][] queens = new int[][]{
+            {0,1},{1,0},{4,0},{0,4},{3,3},{2,4}
+        };
+        int[] king = new int[]{0 , 0};
+        System.out.println(queensAttacktheKing(queens, king).toString());
+    }
+
+    public static List<List<Integer>> queensAttacktheKing(int[][] queens, int[] king) {
+        List<List<Integer>> result = new ArrayList<>();
+        boolean[][] visited = new boolean[8][8];
+        int x, y;
+        for(int i = 0; i < queens.length; i++) {
+            x = queens[i][0];
+            y = queens[i][1];
+            visited[x][y] = true;
+        }
+        
+        int[] allowedMoves = new int[]{-1, 0 ,1};
+        for(int i = 0; i < allowedMoves.length; i++) {
+            for(int j = 0; j < allowedMoves.length; j++) {
+                if(allowedMoves[i] == 0 && allowedMoves[j] == 0) continue;
+                x = king[0];
+                y = king[1];
+                while(x + allowedMoves[i] >= 0 && x + allowedMoves[i] < 8 && y + allowedMoves[j] >=0 && y + allowedMoves[j] < 8) {
+                    x += allowedMoves[i];
+                    y += allowedMoves[j];
+                    if(visited[x][y]) {
+                        result.add(Arrays.asList(x, y));
+                        break;  
+                    }
+                } 
+            }
+        }
+        return result;
+    }
+}
+
+153. Pattern matching with wildcards * and ? 
+
+import java.util.Arrays;
+
+class  java_rough {
+    public static void main(String[] args) {
+        String pattern = "?*d*";
+        String text = "abcd";
+        System.out.println(stringPatternMatcher(pattern, text));
+
+    }
+
+    public static boolean stringPatternMatcher(String pattern, String text) {
+        //sampleSpace created for storing edge cases data that can be hard coded before  going in to loop
+        boolean[][] sampleSpace = new boolean[text.length() + 1][pattern.length() + 1];
+        for(int i = 0; i <= text.length(); i++) {
+            Arrays.fill(sampleSpace[i], false);
+        }
+        // since null pattern will match null string
+        sampleSpace[0][0] = true;
+
+        //Since if a * charater is present in a null string that would also be true so getting value from column at top so that if there is any charater or ? it will be false there on.
+        for(int i = 1; i  <= pattern.length(); i++) {
+            if(pattern.charAt(i - 1) == '*') {
+                sampleSpace[0][i] = sampleSpace[0][i - 1];
+            }
+        }
+
+        for(int i = 1; i <= text.length(); i++) {
+            for(int j = 1; j <= pattern.length(); j++) {
+                if(pattern.charAt(j - 1) == '*') {
+                    System.out.println("got in first");
+                    sampleSpace[i][j] = sampleSpace[i - 1][j] || sampleSpace[i][j - 1];
+                } else if(pattern.charAt(j - 1) == '?' || pattern.charAt(j - 1) == text.charAt(i - 1)) {
+                    sampleSpace[i][j] = sampleSpace[i  -1][j - 1];
+                    System.out.println("got in second");
+                } else {
+                    sampleSpace[i][j] = false;
+                    System.out.println("got in third");
+                }
+                System.out.println("setting " + sampleSpace[i][j] + " for row " + text.charAt(i - 1) + " and column " + pattern.charAt(j - 1));
+            }
+        }
+        return sampleSpace[text.length()][pattern.length()];
+    }
+}
+
+154. Finding running median for given elements
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+class java_rough {
+    public static void main(String[] args) {
+        int[] numbers = new int[]{12, 4, 5, 3, 8, 7};
+        getRunningMedian(numbers);
+    }
+
+    public static void getRunningMedian(int[] numbers) {
+        PriorityQueue<Integer> firstHalf = new PriorityQueue<>(new Comparator<Integer>(){
+            @Override
+            public int compare(Integer value_1, Integer value_2) {
+                return -1 *(value_1 - value_2);
+            }
+        });
+        PriorityQueue<Integer> secondHalf = new PriorityQueue<>();
+        for(int i  = 0; i < numbers.length; i++) {
+            addNumberToHeap(numbers[i], firstHalf, secondHalf);
+            rebalanceHeaps(firstHalf, secondHalf);
+            printMedian(firstHalf, secondHalf);
+        }
+    }
+
+    public static void addNumberToHeap(int number, PriorityQueue<Integer> firstHalf, PriorityQueue<Integer> secondHalf) {
+        if(firstHalf.size() == 0 || firstHalf.peek() >= number) {
+            firstHalf.add(number); 
+        } else {
+            secondHalf.add(number);
+        }
+    }
+
+    public static void rebalanceHeaps(PriorityQueue<Integer> firstHalf, PriorityQueue<Integer> secondHalf) {
+        if(Math.abs(firstHalf.size() - secondHalf.size()) == 2) {
+            PriorityQueue<Integer> biggerHeap, smallerHeap;
+            biggerHeap = firstHalf.size() > secondHalf.size() ? firstHalf : secondHalf;
+            smallerHeap = firstHalf.size() > secondHalf.size() ? secondHalf : firstHalf;
+            smallerHeap.add(biggerHeap.poll());
+        }
+    }
+
+    public static void printMedian(PriorityQueue<Integer> firstHalf, PriorityQueue<Integer> secondHalf) {
+        int firstHalfSize = firstHalf.size();
+        int secondHalfSize = secondHalf.size();
+        double runningMedian;
+
+        runningMedian = (double)(firstHalfSize + secondHalfSize) % 2 == 0 ? 
+            (double)(firstHalf.peek() + secondHalf.peek()) / 2 : 
+            (firstHalfSize > secondHalfSize ? firstHalf.peek() : secondHalf.peek());
+
+        System.out.println(runningMedian);
+    }
+}
+
+155. Cookie mix problem : https://www.hackerrank.com/challenges/jesse-and-cookies/problem?utm_campaign=challenge-recommendation&utm_medium=email&utm_source=7-day-campaign
+
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+class java_rough {
+    public static void main(String[] args) {
+        int minimumSweetness = 7;
+        int numberOfCookies = 6; 
+        int[] cookies = new int[]{1, 2, 3, 9, 10, 12};
+        int minumumSweetnessCookie, secondMinimumSweetnessCookie, newCookieSweetness;
+        int operations = 0;
+
+        Queue<Integer> currentSweetness = new PriorityQueue<>();
+
+        for(int i = 0; i < numberOfCookies; i++) {
+            currentSweetness.add(cookies[i]);
+        }
+
+        minumumSweetnessCookie = currentSweetness.poll();
+
+        while(minumumSweetnessCookie < minimumSweetness && currentSweetness.size() >= 2) {
+            secondMinimumSweetnessCookie = currentSweetness.poll();
+            newCookieSweetness = minumumSweetnessCookie + (2 * secondMinimumSweetnessCookie);
+            System.out.println("Created new cookie from " + minumumSweetnessCookie + " and " 
+                                                            + secondMinimumSweetnessCookie 
+                                                            + " to get "
+                                                            + newCookieSweetness);
+            currentSweetness.add(newCookieSweetness);
+            minumumSweetnessCookie = currentSweetness.poll();
+            operations++;
+        }
+
+        if(minumumSweetnessCookie < minimumSweetness) {
+            System.out.println(-1);
+        } else {
+            System.out.println(operations);
+        }
+        
+    }
+}
+
+156. Creating a string given its huffman coded output and tree : https://www.hackerrank.com/challenges/tree-huffman-decoding/problem
+
+class java_rough {
+    void decode(String codedString, Node root) {
+        int index = 0;
+        char characterToPick;
+        Node node = root;
+        Node previousNode = null;
+        StringBuilder result = new StringBuilder("");
+        while(index < codedString.length()) {
+            if(codedString.charAt(index) == '0') {
+                node = node.left;
+            } else {
+                node = node.right;
+            }
+            if(node == null) {
+                result.append(previousNode.data);
+                previousNode = null;
+                node = root;
+                index --;
+            } else {
+                previousNode = node;
+            }
+            index ++;
+        }
+        if(previousNode != null) {
+            result.append(previousNode.data);
+        }
+        System.out.println(result.toString());
+    }
+}
 
 
 
